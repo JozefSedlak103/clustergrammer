@@ -1,41 +1,39 @@
-var interactionEvents = require("./../interactions/interactionEvents");
-var extend = require("xtend/mutable");
-var track_interaction_zoom_data = require("./../interactions/trackInteractionZoomData");
-var run_hide_tooltip = require("./../tooltip/runHideTooltip");
-var double_clicking = require("./../interactions/doubleClicking");
+import doubleClicking from "../interactions/doubleClicking";
+import interactionEvents from "../interactions/interactionEvents";
+import singleClicking from "../interactions/singleClicking";
+import track_interaction_zoom_data from "../interactions/trackInteractionZoomData";
 
-module.exports = function zoom_rules_high_mat(regl, params, external_model) {
-  var cgm = this;
-  var opts = opts || {};
-  var options = extend(
-    {
-      element: opts.element || regl._gl.canvas,
-    },
-    opts || {}
-  );
-
-  var element = options.element;
-
-  /////////////////////////////////////////
+export default function zoom_rules_high_mat(
+  regl,
+  store,
+  catArgsManager,
+  camerasManager,
+  onClick
+) {
+  const options = {
+    element: regl._gl.canvas,
+  };
+  const element = options.element;
+  // ///////////////////////////////////////
   // Original interaction tracking
-  /////////////////////////////////////////
-
+  // ///////////////////////////////////////
   interactionEvents({
     element: element,
   })
     .on("interaction", function (ev) {
-      track_interaction_zoom_data(regl, params, ev);
-
-      run_hide_tooltip(params);
+      track_interaction_zoom_data(store, ev);
+      // run_hide_tooltip(store, tooltip_fun);
     })
     .on("interactionend", function () {
+      const interactionState = store.getState();
       if (
-        params.ani.time - params.ani.last_click <
-        params.ani.dblclick_duration
+        interactionState.animation.time -
+          interactionState.animation.last_click <
+        interactionState.animation.dblclick_duration
       ) {
-        double_clicking(regl, params);
+        doubleClicking(regl, store, catArgsManager, camerasManager);
       } else {
-        cgm.single_clicking(params, external_model);
+        singleClicking(store, onClick);
       }
     });
-};
+}

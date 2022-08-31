@@ -1,11 +1,20 @@
-module.exports = function final_mouseover_frame(regl, params) {
-  // reduce the number of mouseovers
-  params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
+import { setTotalMouseover } from "../state/reducers/visualization/visualizationSlice";
 
+export default (function finalMouseoverFrame(store) {
+  // reduce the number of mouseovers
+  store.dispatch(
+    setTotalMouseover(store.getState().visualization.total_mouseover - 1)
+  );
+  const state = store.getState();
   if (
-    params.zoom_data.x.total_mouseover == 0 &&
-    params.int.still_mouseover == false
+    state.visualization.total_mouseover === 0 &&
+    state.interaction.still_mouseover === false
   ) {
-    params.tooltip.show_tooltip = true;
+    store.dispatch(
+      mutateTooltipState({
+        show_tooltip: true,
+      })
+    );
   }
-};
+});

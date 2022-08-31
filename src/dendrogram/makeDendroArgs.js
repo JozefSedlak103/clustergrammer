@@ -1,45 +1,37 @@
-var m3 = require("./../draws/mat3Transform");
-var color_to_rgba = require("./../colors/colorToRgba");
-var make_dendro_arr = require("./makeDendroArr");
+import { zoom_function } from "../cameras/zoomFunction";
+import color_to_rgba from "../colors/colorToRgba";
+import { rotation, scaling } from "../draws/mat3Transform";
+import make_dendro_arr from "./makeDendroArr";
 
-module.exports = function make_dendro_args(regl, params, inst_axis) {
-  var rotation_radians;
-  var heat_size;
-  var mat_size_offset;
+export default (function makeDendroArgs(regl, store, inst_axis) {
+  const state = store.getState();
+
+  let rotation_radians;
+  let heat_size;
+  let mat_size_offset;
   if (inst_axis === "row") {
     rotation_radians = 0;
-    heat_size = params.viz_dim.heat_size.y;
-    mat_size_offset = params.viz_dim.mat_size.x;
+    heat_size = state.visualization.viz_dim.heat_size.y;
+    mat_size_offset = state.visualization.viz_dim.mat_size.x;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
-    heat_size = params.viz_dim.heat_size.x;
-    mat_size_offset = params.viz_dim.mat_size.y;
+    heat_size = state.visualization.viz_dim.heat_size.x;
+    mat_size_offset = state.visualization.viz_dim.mat_size.y;
   }
-
-  var num_labels = params.labels["num_" + inst_axis];
-  var dendro_width = params.dendro.tri_height;
-  var tri_width = heat_size / num_labels;
-
-  var dendro_arr = make_dendro_arr(params, inst_axis);
-
-  var zoom_function = function (context) {
-    return context.view;
-  };
-
+  const num_labels = state.labels["num_" + inst_axis];
+  const dendro_width = state.dendro.tri_height;
+  const tri_width = heat_size / num_labels;
+  const dendro_arr = make_dendro_arr(store, inst_axis);
   const dendro_buffer = regl.buffer({
     length: dendro_arr.length,
     type: "float",
     usage: "dynamic",
   });
-
   dendro_buffer(dendro_arr);
-
-  var mat_scale = m3.scaling(1, 1);
-
-  var mat_rotate = m3.rotation(rotation_radians);
-  var inst_rgba = color_to_rgba("black", 0.35);
-
-  var args = {
+  const mat_scale = scaling(1, 1);
+  const mat_rotate = rotation(rotation_radians);
+  const inst_rgba = color_to_rgba("black", 0.35);
+  const args = {
     vert: `
       precision highp float;
       attribute vec2 position;
@@ -83,9 +75,9 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
 
     attributes: {
       position: [
-        [params.dendro.trap_float, 2 * tri_width],
+        [state.dendro.trap_float, 2 * tri_width],
         [dendro_width, tri_width],
-        [params.dendro.trap_float, 0],
+        [state.dendro.trap_float, 0],
       ],
       dendro_att: {
         buffer: dendro_buffer,
@@ -111,6 +103,5 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
       range: [0, 1],
     },
   };
-
   return args;
-};
+});

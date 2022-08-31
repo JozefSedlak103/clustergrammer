@@ -1,21 +1,21 @@
-module.exports = function make_dendro_arr(params, inst_axis) {
-  var inst_trap;
+import * as _ from "underscore";
 
-  var group_info;
+export default (function make_dendro_arr(store, inst_axis) {
+  const { dendro } = store.getState();
+
+  let inst_trap;
+  let group_info;
   if (inst_axis === "row") {
-    group_info = params.dendro.group_info.row;
+    group_info = dendro.group_info.row;
   } else {
-    group_info = params.dendro.group_info.col;
+    group_info = dendro.group_info.col;
   }
-
-  var offset_array = [];
-  var num_in_group;
+  const offset_array = [];
+  let num_in_group;
   _.each(group_info, function (inst_group) {
     num_in_group = inst_group.all_names.length;
     inst_trap = [inst_group.pos_top, num_in_group];
-
     offset_array.push(inst_trap);
   });
-
   return offset_array;
-};
+});

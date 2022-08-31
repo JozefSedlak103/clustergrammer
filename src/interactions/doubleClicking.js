@@ -1,12 +1,15 @@
-var custom_label_reorder = require("./../reorders/customLabelReorder");
+import custom_label_reorder from "../reorders/customLabelReorder";
 
-module.exports = function double_clicking(regl, params) {
-  // params.tooltip.tooltip_type
-  if (params.tooltip.tooltip_type === "col-label") {
-    custom_label_reorder(regl, params, "col");
+export default (function doubleClicking(
+  regl,
+  store,
+  catArgsManager,
+  camerasManager
+) {
+  const state = store.getState();
+  if (state.tooltip.tooltip_type === "col-label") {
+    custom_label_reorder(regl, store, catArgsManager, camerasManager, "col");
+  } else if (state.tooltip.tooltip_type === "row-label") {
+    custom_label_reorder(regl, store, catArgsManager, camerasManager, "row");
   }
-
-  if (params.tooltip.tooltip_type === "row-label") {
-    custom_label_reorder(regl, params, "row");
-  }
-};
+});

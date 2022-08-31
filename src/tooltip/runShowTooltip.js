@@ -1,15 +1,25 @@
-var make_tooltip_text = require("./makeTooltipText");
-var remove_lost_tooltips = require("./removeLostTooltips");
-var display_and_position_tooltip = require("./displayAndPositionTooltip");
+import display_and_position_tooltip from "./displayAndPositionTooltip";
+import makeTooltipText from "./makeTooltipText";
+import remove_lost_tooltips from "./removeLostTooltips";
 
-module.exports = function run_show_tooltip(cgm, external_model) {
-  let params = cgm.params;
-
-  if (params.tooltip.permanent_tooltip === false) {
+export default (function runShowTooltip(
+  regl,
+  store,
+  catArgsManager,
+  camerasManager,
+  tooltip_fun
+) {
+  const state = store.getState();
+  if (state.tooltip.permanent_tooltip === false) {
     remove_lost_tooltips();
-
-    make_tooltip_text(cgm, external_model);
-
-    display_and_position_tooltip(params);
+    makeTooltipText(
+      regl,
+      store,
+      catArgsManager,
+      camerasManager,
+      tooltip_fun,
+      state.interaction.mouseover
+    );
+    display_and_position_tooltip(state);
   }
-};
+});

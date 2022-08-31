@@ -1,12 +1,23 @@
-module.exports = function run_hide_tooltip(params, click_on_heatmap = false) {
-  if (params.tooltip.permanent_tooltip === false) {
-    params.tooltip_fun.hide();
-  }
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 
+export default (function run_hide_tooltip(
+  store,
+  tooltip_fun,
+  click_on_heatmap = false
+) {
+  const { tooltip } = store.getState();
+  if (tooltip.permanent_tooltip === false) {
+    tooltip_fun.hide();
+  }
   if (click_on_heatmap) {
-    params.tooltip.permanent_tooltip = false;
-    params.tooltip_fun.hide();
+    store.dispatch(
+      mutateTooltipState({
+        permanent_tooltip: false,
+      })
+    );
+    tooltip_fun.hide();
   }
 
-  params.cat_data.showing_color_picker = false;
-};
+  store.dispatch(mutateCategoriesState({ showing_color_picker: false }));
+});

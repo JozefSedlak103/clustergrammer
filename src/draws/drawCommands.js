@@ -1,35 +1,47 @@
-let draw_webgl_layers = require("./drawWebglLayers");
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
+import draw_webgl_layers from "./drawWebglLayers";
 
-module.exports = function draw_commands(cgm, external_model) {
-  let regl = cgm.regl;
-  let params = cgm.params;
+export default (function drawCommands(
+  regl,
+  store,
+  catArgsManager,
+  camerasManager
+) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
 
   // if mousing over categories initialize all categories to low opacity
-  var mousing_over_cat = false;
-  if (params.tooltip.tooltip_type) {
-    if (params.tooltip.tooltip_type.includes("-cat-")) {
+  let mousing_over_cat = false;
+  if (state.tooltip.tooltip_type) {
+    if (state.tooltip.tooltip_type.includes("-cat-")) {
       // This is required to updated category opacity when mousing over
-      require("./../params/generateCatArgsArrs")(regl, params);
-
-      params.int.need_reset_cat_opacity = true;
+      catArgsManager.regenerateCatArgsArrs(store);
+      dispatch(
+        mutateInteractionState({
+          need_reset_cat_opacity: true,
+        })
+      );
       mousing_over_cat = true;
     }
   }
-
-  if (params.int.need_reset_cat_opacity && mousing_over_cat == false) {
-    require("./../params/generateCatArgsArrs")(regl, params);
-    params.int.need_reset_cat_opacity = false;
+  if (
+    store.getState().interaction.need_reset_cat_opacity &&
+    mousing_over_cat === false
+  ) {
+    catArgsManager.regenerateCatArgsArrs(store);
+    dispatch(
+      mutateInteractionState({
+        need_reset_cat_opacity: false,
+      })
+    );
   }
-
-  draw_webgl_layers(cgm);
-
-  var tooltip = params.tooltip;
-
-  // show tooltip if necessary
-  if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas) {
-    require("./../tooltip/runShowTooltip")(cgm, external_model);
+  draw_webgl_layers(regl, store, catArgsManager, camerasManager);
+  if (state.labels.draw_labels) {
+    dispatch(
+      mutateLabelsState({
+        draw_labels: false,
+      })
+    );
   }
-  if (params.labels.draw_labels) {
-    params.labels.draw_labels = false;
-  }
-};
+});

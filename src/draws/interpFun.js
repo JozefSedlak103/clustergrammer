@@ -1,9 +1,10 @@
-const ease = require("eases/cubic-in-out");
+import ease from "eases/cubic-in-out";
 
-module.exports = function interp_fun(params) {
-  var inst_ease = ease(
-    (params.ani.time - params.ani.last_switch_time) / params.ani.ani_duration
+export default (function interpFun(store) {
+  const state = store.getState();
+  const inst_ease = ease(
+    (state.animation.time - state.animation.last_switch_time) /
+      state.animation.ani_duration
   );
-
   return inst_ease;
-};
+});

@@ -1,114 +1,117 @@
-var d3 = require("d3");
-module.exports = function display_and_position_tooltip(params) {
-  // Display Tooltip
-  ////////////////////////////////
-  d3.selectAll(".cgm-tooltip").style("display", "none");
+import { select, selectAll } from "d3-selection";
 
+export default (function display_and_position_tooltip(state) {
+  // Display Tooltip
+  // //////////////////////////////
+  selectAll(".cgm-tooltip").style("display", "none");
   // display tooltip
-  d3.select(params.tooltip_id)
+  select(state.tooltip.tooltip_id)
     .style("opacity", 1)
     .style("display", "block")
     .style("z-index", 99);
-
   // Position Tooltip
-  ////////////////////////////////
+  // //////////////////////////////
   // this is necessary to offset the tooltip correctly, probably due to the
-  // padding in the tooltip or some related paramters
-  var magic_x_offset = 22;
-
-  var d3_tip_width = parseFloat(
-    d3.select(params.tooltip_id).style("width").replace("px", "")
+  // padding in the tooltip or some related parameters
+  // TODO: ???
+  const magic_x_offset = 22;
+  const d3_tip_width = parseFloat(
+    select(state.tooltip.tooltip_id).style("width").replace("px", "")
   );
-
-  var d3_tip_height = parseFloat(
-    d3.select(params.tooltip_id).style("height").replace("px", "")
+  const d3_tip_height = parseFloat(
+    select(state.tooltip.tooltip_id).style("height").replace("px", "")
   );
-
-  params.d3_tip_width = d3_tip_width;
-
   // need to set up custom positioning of the tooltip based on the mouseover type
   // upper left if on matrix-cell, upper right if on row label, lower left if on
-  // column mouseover. Should be able to check params.tooltip.tooltip_type to
+  // column mouseover. Should be able to check state.tooltip.tooltip_type to
   // find out how to position the tooltip
-
-  if (params.tooltip.tooltip_type === "matrix-cell") {
-    d3.select(params.tooltip_id)
+  if (state.tooltip.tooltip_type === "matrix-cell") {
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
-        var total_x_offset =
-          params.zoom_data.x.cursor_position - d3_tip_width + magic_x_offset;
+        const total_x_offset =
+          state.visualization.zoom_data.x.cursor_position -
+          d3_tip_width +
+          magic_x_offset;
         return total_x_offset + "px";
       })
       .style("margin-top", function () {
-        var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
+        const total_y_offset =
+          state.visualization.zoom_data.y.cursor_position - d3_tip_height;
         return total_y_offset + "px";
       });
-  } else if (params.tooltip.tooltip_type === "row-label") {
-    d3.select(params.tooltip_id)
+  } else if (state.tooltip.tooltip_type === "row-label") {
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
-        var total_x_offset = 150 + params.cat_data.row.length * 12;
+        const total_x_offset = 150 + state.cat_data.row.length * 12;
         return total_x_offset + "px";
       })
       .style("margin-top", function () {
-        var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
+        const total_y_offset =
+          state.visualization.zoom_data.y.cursor_position - d3_tip_height;
         return total_y_offset + "px";
       });
-  } else if (params.tooltip.tooltip_type === "col-label") {
-    d3.select(params.tooltip_id)
+  } else if (state.tooltip.tooltip_type === "col-label") {
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
-        var total_x_offset =
-          params.zoom_data.x.cursor_position - d3_tip_width + magic_x_offset;
+        const total_x_offset =
+          state.visualization.zoom_data.x.cursor_position -
+          d3_tip_width +
+          magic_x_offset;
         return total_x_offset + "px";
       })
       .style("margin-top", function () {
-        var total_y_offset = 125 + params.cat_data.col.length * 12;
+        const total_y_offset = 125 + state.cat_data.col.length * 12;
         return total_y_offset + "px";
       });
-  } else if (params.tooltip.tooltip_type === "col-dendro") {
-    d3.select(params.tooltip_id)
+  } else if (state.tooltip.tooltip_type === "col-dendro") {
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
-        var total_x_offset =
-          params.zoom_data.x.cursor_position -
+        const total_x_offset =
+          state.visualization.zoom_data.x.cursor_position -
           d3_tip_width / 2 +
           magic_x_offset;
         return total_x_offset + "px";
       })
       .style("margin-top", function () {
-        var total_y_offset = 845 - d3_tip_height;
+        const total_y_offset = 845 - d3_tip_height;
         return total_y_offset + "px";
       });
-  } else if (params.tooltip.tooltip_type === "row-dendro") {
-    d3.select(params.tooltip_id)
+  } else if (state.tooltip.tooltip_type === "row-dendro") {
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
-        // var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
+        // var total_x_offset = params.visualization.zoom_data.x.cursor_position - d3_tip_width +
         //                      magic_x_offset;
-
-        var total_x_offset = 870 - d3_tip_width;
+        const total_x_offset = 870 - d3_tip_width;
         return total_x_offset + "px";
       })
       .style("margin-top", function () {
-        var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
+        const total_y_offset =
+          state.visualization.zoom_data.y.cursor_position - d3_tip_height;
         return total_y_offset + "px";
       });
-  } else if (params.tooltip.tooltip_type.includes("col-cat-")) {
-    d3.select(params.tooltip_id)
+  } else if (state.tooltip.tooltip_type.includes("col-cat-")) {
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
-        var total_x_offset =
-          params.zoom_data.x.cursor_position - d3_tip_width + magic_x_offset;
+        const total_x_offset =
+          state.visualization.zoom_data.x.cursor_position -
+          d3_tip_width +
+          magic_x_offset;
         return total_x_offset + "px";
       })
       .style("margin-top", function () {
-        var total_y_offset = 125 + params.cat_data.col.length * 12;
+        const total_y_offset = 125 + state.cat_data.col.length * 12;
         return total_y_offset + "px";
       });
-  } else if (params.tooltip.tooltip_type.includes("row-cat-")) {
-    d3.select(params.tooltip_id)
+  } else if (state.tooltip.tooltip_type.includes("row-cat-")) {
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
-        var total_x_offset = 150 + params.cat_data.row.length * 12;
+        const total_x_offset = 150 + state.cat_data.row.length * 12;
         return total_x_offset + "px";
       })
       .style("margin-top", function () {
-        var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
+        const total_y_offset =
+          state.visualization.zoom_data.y.cursor_position - d3_tip_height;
         return total_y_offset + "px";
       });
   }
-};
+});

@@ -68,4 +68,4 @@ big_data
 
 dist/
 
-cg/
+example/example-app/src/cg

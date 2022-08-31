@@ -1,8 +1,7 @@
-var underscore = require("underscore");
+import * as underscore from "underscore";
 
-module.exports = function get_max_tree_distance(dm) {
-  var max_distance_in_dm = 0;
-
+export default (function get_max_tree_distance(dm) {
+  let max_distance_in_dm = 0;
   underscore.each(dm, function (row) {
     underscore.each(row, function (inst_val) {
       if (isFinite(inst_val)) {
@@ -12,6 +11,5 @@ module.exports = function get_max_tree_distance(dm) {
       }
     });
   });
-
   return max_distance_in_dm;
-};
+});

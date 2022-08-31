@@ -1,38 +1,34 @@
-var make_position_arr = require("./makePositionArr");
-var make_opacity_arr = require("./makeOpacityArr");
+import { zoom_function } from "../cameras/zoomFunction";
+import { setArrsState } from "../state/reducers/arrsSlice";
+import make_opacity_arr from "./makeOpacityArr";
+import make_position_arr from "./makePositionArr";
 
-module.exports = function make_matrix_args() {
-  let cgm = this;
-  let regl = cgm.regl;
-  let params = cgm.params;
+export default function make_matrix_args(regl, store) {
+  const state = store.getState();
 
   // make arrays
-  params.arrs = {};
-  params.arrs.opacity_arr = make_opacity_arr(params);
-
-  params.arrs.position_arr = {};
-
-  params.arrs.position_arr.ini = make_position_arr(
-    params,
-    params.order.inst.row,
-    params.order.inst.col
+  const arrs = {};
+  arrs.opacity_arr = make_opacity_arr(store);
+  arrs.position_arr = {};
+  arrs.position_arr.ini = make_position_arr(
+    state,
+    state.order.inst.row,
+    state.order.inst.col
   );
-
-  params.arrs.position_arr.new = make_position_arr(
-    params,
-    params.order.new.row,
-    params.order.new.col
+  arrs.position_arr.new = make_position_arr(
+    state,
+    state.order.new.row,
+    state.order.new.col
   );
+  store.dispatch(setArrsState(arrs));
 
-  var opacity_buffer = regl.buffer({
+  const opacity_buffer = regl.buffer({
     type: "float",
     usage: "dynamic",
-  })(params.arrs.opacity_arr);
-
-  var tile_width = params.viz_dim.tile_width;
-  var tile_height = params.viz_dim.tile_height;
-
-  var triangle_verts = [
+  })(arrs.opacity_arr);
+  const tile_width = state.visualization.viz_dim.tile_width;
+  const tile_height = state.visualization.viz_dim.tile_height;
+  const triangle_verts = [
     [tile_width, 0.0],
     [tile_width, tile_height],
     [0.0, tile_height],
@@ -40,8 +36,7 @@ module.exports = function make_matrix_args() {
     [0.0, 0.0],
     [0.0, tile_height],
   ];
-
-  var vert_string = `
+  const vert_string = `
     // precision highp float;
     precision lowp float;
     attribute vec2 position;
@@ -75,8 +70,7 @@ module.exports = function make_matrix_args() {
       opacity_vary = opacity_att;
 
     }`;
-
-  var frag_string = `
+  const frag_string = `
     // precision highp float;
     precision lowp float;
 
@@ -97,21 +91,18 @@ module.exports = function make_matrix_args() {
       }
 
     }`;
-
-  var num_instances = params.arrs.position_arr.ini.length;
-  var zoom_function = params.zoom_data.zoom_function;
-
-  var inst_properties = {
+  const num_instances = arrs.position_arr.ini.length;
+  const inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
       position: triangle_verts,
       pos_att_ini: {
-        buffer: regl.buffer(params.arrs.position_arr.ini),
+        buffer: regl.buffer(arrs.position_arr.ini),
         divisor: 1,
       },
       pos_att_new: {
-        buffer: regl.buffer(params.arrs.position_arr.new),
+        buffer: regl.buffer(arrs.position_arr.new),
         divisor: 1,
       },
       opacity_att: {
@@ -138,22 +129,15 @@ module.exports = function make_matrix_args() {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop("run_animation"),
-      pos_rgb: params.viz.mat_colors.pos_rgb,
-      neg_rgb: params.viz.mat_colors.neg_rgb,
+      pos_rgb: state.cat_viz.mat_colors.pos_rgb,
+      neg_rgb: state.cat_viz.mat_colors.neg_rgb,
     },
     instances: num_instances,
     depth: {
       enable: false,
     },
   };
-
   // draw top and bottom of matrix cells
-  //////////////////////////////////////
-  var matrix_args = {};
-  matrix_args.regl_props = {};
-  matrix_args.regl_props.rects = inst_properties;
-
-  params.matrix_args = matrix_args;
-
-  // return matrix_args;
-};
+  // ////////////////////////////////////
+  return inst_properties;
+}

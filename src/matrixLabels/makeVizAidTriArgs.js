@@ -1,98 +1,67 @@
-var m3 = require("./../draws/mat3Transform");
-var color_to_rgba = require("./../colors/colorToRgba");
-var make_viz_aid_tri_pos_arr = require("./makeVizAidTriPosArr");
-var interp_fun = require("./../draws/interpFun");
+import { zoom_function } from "../cameras/zoomFunction";
+import color_to_rgba from "../colors/colorToRgba";
+import interpFun from "../draws/interpFun";
+import { rotation, scaling } from "../draws/mat3Transform";
+import make_viz_aid_tri_pos_arr from "./makeVizAidTriPosArr";
 
-module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
-  var num_labels = params.labels["num_" + inst_axis];
-
-  var tri_height;
-  var tri_width;
-  var mat_size;
-  var top_offset;
-
+export default (function make_viz_aid_tri_args(regl, store, inst_axis) {
+  const state = store.getState();
+  const num_labels = state.labels["num_" + inst_axis];
+  let tri_height;
+  let tri_width;
+  let mat_size;
+  let top_offset;
   if (inst_axis === "col") {
-    mat_size = params.viz_dim.heat_size.x;
+    mat_size = state.visualization.viz_dim.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
-    var reduce_height = params.zoom_data.x.total_zoom;
+    const reduce_height = state.visualization.zoom_data.x.total_zoom;
     tri_height = (mat_size / num_labels) * reduce_height;
     tri_width = mat_size / num_labels;
-
     // original top_offset calc (undercorrects)
-    top_offset = -params.viz_dim.mat_size.y - tri_height;
+    top_offset = -state.visualization.viz_dim.mat_size.y - tri_height;
   } else {
     // rows have fixed viz aid triangle 'heights'
-    mat_size = params.viz_dim.heat_size.y;
+    mat_size = state.visualization.viz_dim.heat_size.y;
     // tri_height = 0.0125;
     tri_height = 0.02;
     tri_width = mat_size / num_labels;
-    top_offset = -params.viz_dim.mat_size.x - tri_height;
+    top_offset = -state.visualization.viz_dim.mat_size.x - tri_height;
   }
-
-  var zoom_function = function (context) {
-    return context.view;
-  };
-
-  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(
-    params,
-    inst_axis,
-    params.order.inst[inst_axis]
-  );
-  var tri_offset_array_new = make_viz_aid_tri_pos_arr(
-    params,
-    inst_axis,
-    params.order.new[inst_axis]
-  );
-
-  /////////////////////////////////
+  const tri_offset_array_inst = make_viz_aid_tri_pos_arr(store, inst_axis);
+  const tri_offset_array_new = make_viz_aid_tri_pos_arr(store, inst_axis);
+  // ///////////////////////////////
   // Rotation and Scaling
-  /////////////////////////////////
-
-  var scale_y = m3.scaling(2, 1);
-
-  var rotation_radians;
+  // ///////////////////////////////
+  const scale_y = scaling(2, 1);
+  let rotation_radians;
   if (inst_axis === "row") {
     rotation_radians = 0;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
   }
-
-  var mat_rotate = m3.rotation(rotation_radians);
-
-  var total_zoom = params.zoom_data.x.total_zoom;
-
-  var inst_rgba = color_to_rgba("#eee", 1.0);
-  // var inst_rgba = color_to_rgba('red', 1.0)
-
+  const mat_rotate = rotation(rotation_radians);
+  const total_zoom = state.visualization.zoom_data.x.total_zoom;
+  const inst_rgba = color_to_rgba("#eee", 1.0);
   // want to be able to set color based on search status
-  let color_arr_ini = Array(num_labels).fill(inst_rgba);
-
-  // let color_arr = color_arr_ini
-
-  let searched_rows = params.search.searched_rows;
-
+  const color_arr_ini = Array(num_labels).fill(inst_rgba);
+  const searched_rows = state.search.searched_rows;
   // change color of selected rows
-  let color_arr = color_arr_ini.map((x, i) => {
+  const color_arr = color_arr_ini.map((x, i) => {
     if (inst_axis === "row") {
-      let inst_name = params.network.row_node_names[i];
+      const inst_name = state.network.row_node_names[i];
       if (searched_rows.includes(inst_name)) {
         x = color_to_rgba("red", 1.0);
       }
     }
     return x;
   });
-
   const color_buffer = regl.buffer({
     length: num_labels,
     usage: "dynamic",
   });
-
   color_buffer(color_arr);
-
-  params.viz_tri_color_arr = color_arr;
-
-  var args = {
+  const args = {
     vert: `
       precision highp float;
       attribute vec2 ini_position;
@@ -137,7 +106,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
         color_vary = color_att;
       }
     `,
-
     frag: `
 
       precision highp float;
@@ -156,7 +124,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
       }
 
     `,
-
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
@@ -164,13 +131,11 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
         [0, -tri_width],
         [tri_height, -2 * tri_width],
       ],
-
       // pass tri_offset_att_inst buffer
       tri_offset_att_inst: {
         buffer: regl.buffer(tri_offset_array_inst),
         divisor: 1,
       },
-
       // pass tri_offset_att_inst buffer
       tri_offset_att_new: {
         buffer: regl.buffer(tri_offset_array_new),
@@ -181,7 +146,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
         divisor: 1,
       },
     },
-
     uniforms: {
       zoom: zoom_function,
       mat_rotate: mat_rotate,
@@ -190,10 +154,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
       // triangle_color: inst_rgba,
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
-      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.ani.running,
+      interp_uni: () => Math.max(0, Math.min(1, interpFun(store))),
+      run_animation: state.animation.running,
     },
-
     count: 3,
     instances: num_labels,
     depth: {
@@ -204,6 +167,5 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
       range: [0, 1],
     },
   };
-
   return args;
-};
+});

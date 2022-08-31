@@ -1,61 +1,74 @@
-var d3 = require("d3");
-var make_dendro_tooltip = require("./makeDendroTooltip");
+import { select } from "d3-selection";
+import * as _ from "underscore";
+import { getHzomeGeneInfo } from "./getHzomeGeneInfo";
+import make_dendro_tooltip from "./makeDendroTooltip";
 
-module.exports = function make_tooltip_text(cgm, external_model) {
-  let params = cgm.params;
-  var inst_axis;
-  var tooltip_text;
-  var mouseover = params.int.mouseover;
+export default (function makeTooltipText(
+  regl,
+  store,
+  catArgsManager,
+  camerasManager,
+  tooltip_fun,
+  mouseover
+) {
+  const state = store.getState();
 
-  if (params.tooltip.tooltip_type === "matrix-cell") {
+  let inst_axis;
+  let tooltip_text;
+  if (state.tooltip.tooltip_type === "matrix-cell") {
     // Matrix-Cell Tooltip
-    ////////////////////////
-
+    // //////////////////////
     // row name
     tooltip_text = mouseover.row.name;
     tooltip_text = tooltip_text + " and ";
-
     // col name
     tooltip_text = tooltip_text + mouseover.col.name;
     tooltip_text = tooltip_text + " <br>Value: " + mouseover.value.toFixed(3);
-
-    if ("value_iz" in params.int.mouseover) {
+    if ("value_iz" in state.interaction.mouseover) {
       tooltip_text =
         tooltip_text + " <br>Original value: " + mouseover.value_iz.toFixed(3);
     }
-
-    params.tooltip_fun.show("tooltip");
-    d3.select(params.tooltip_id).style("text-align", "left").html(tooltip_text);
-  } else if (params.tooltip.tooltip_type.indexOf("-label") > 0) {
+    tooltip_fun.show("tooltip");
+    select(state.tooltip.tooltip_id)
+      .style("text-align", "left")
+      .html(tooltip_text);
+  } else if (state.tooltip?.tooltip_type.indexOf("-label") > 0) {
     // Label Tooltip
-    //////////////////
-    inst_axis = params.tooltip.tooltip_type.split("-")[0];
+    // ////////////////
+    inst_axis = state.tooltip?.tooltip_type.split("-")[0];
     tooltip_text = mouseover[inst_axis].name;
-
     _.each(mouseover[inst_axis].cats, function (inst_cat) {
       tooltip_text = tooltip_text + "<br>" + inst_cat;
     });
-
-    params.tooltip_fun.show("tooltip");
-    d3.select(params.tooltip_id).style("text-align", "left").html(tooltip_text);
-
-    if (params.use_hzome === true) {
-      params.hzome.gene_info(mouseover[inst_axis].name);
+    tooltip_fun.show("tooltip");
+    select(state.tooltip.tooltip_id)
+      .style("text-align", "left")
+      .html(tooltip_text);
+    if (state.tooltip.use_hzome === true) {
+      getHzomeGeneInfo(store, mouseover[inst_axis].name);
     }
-  } else if (params.tooltip.tooltip_type.indexOf("-dendro") > 0) {
+  } else if (state.tooltip?.tooltip_type.indexOf("-dendro") > 0) {
     // Dendro Tooltip
-    //////////////////
-    inst_axis = params.tooltip.tooltip_type.split("-")[0];
-    make_dendro_tooltip(cgm, external_model, inst_axis);
-  } else if (params.tooltip.tooltip_type.indexOf("-cat-") > 0) {
+    // ////////////////
+    inst_axis = state.tooltip.tooltip_type.split("-")[0];
+    make_dendro_tooltip(
+      regl,
+      store,
+      catArgsManager,
+      camerasManager,
+      tooltip_fun,
+      mouseover,
+      inst_axis
+    );
+  } else if (state.tooltip?.tooltip_type.indexOf("-cat-") > 0) {
     // Category Tooltip
-    /////////////////////
-    inst_axis = params.tooltip.tooltip_type.split("-")[0];
-    var inst_index = params.tooltip.tooltip_type.split("-")[2];
-
+    // ///////////////////
+    inst_axis = state.tooltip.tooltip_type.split("-")[0];
+    const inst_index = state.tooltip.tooltip_type.split("-")[2];
     tooltip_text = mouseover[inst_axis].cats[inst_index];
-
-    params.tooltip_fun.show("tooltip");
-    d3.select(params.tooltip_id).style("text-align", "left").html(tooltip_text);
+    tooltip_fun.show("tooltip");
+    select(state.tooltip.tooltip_id)
+      .style("text-align", "left")
+      .html(tooltip_text);
   }
-};
+});
