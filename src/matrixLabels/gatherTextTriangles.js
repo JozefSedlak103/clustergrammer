@@ -1,7 +1,11 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import WebworkerPromise from 'webworker-promise';
-import { dropFromLabelQueue, mutateLabelsState, pushHighQueueLabel } from "../state/reducers/labels/labelsSlice";
+import WebworkerPromise from "webworker-promise";
+import {
+  dropFromLabelQueue,
+  mutateLabelsState,
+  pushHighQueueLabel,
+} from "../state/reducers/labels/labelsSlice";
 import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
 import { MAX_LABEL_LENGTH } from "./labels.const";
 import vectorize_label from "./vectorizeLabel";
@@ -9,7 +13,9 @@ import vectorize_label from "./vectorizeLabel";
 let vectorizeWorker = undefined;
 // check it offscreencanvs is supported.
 if (typeof OffscreenCanvas !== "undefined") {
-  vectorizeWorker = new WebworkerPromise(new Worker(new URL("./vectorizeWorker.js", import.meta.url)));
+  vectorizeWorker = new WebworkerPromise(
+    new Worker(new URL("./vectorizeWorker.js", import.meta.url))
+  );
 }
 export default function gather_text_triangles(store, viz_area, inst_axis) {
   const {
@@ -23,6 +29,8 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
   const fontDetail = labels.font_detail;
   const text_triangles = cloneDeep(oldTextTriangles);
   text_triangles.draw[inst_axis] = [];
+
+  const labelsLength = labels.labelLength || MAX_LABEL_LENGTH;
 
   let inst_dim;
   if (inst_axis === "col") {
@@ -43,8 +51,8 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         inst_name = inst_label.name.split(": ")[1];
       }
       // truncate label if needed
-      if (inst_name.length > MAX_LABEL_LENGTH) {
-        inst_name = `${inst_name.substring(0, MAX_LABEL_LENGTH)}...`;
+      if (inst_name.length > labelsLength) {
+        inst_name = `${inst_name.substring(0, labelsLength)}...`;
       }
       let inst_text_vect;
       if (inst_name in text_triangles[inst_axis]) {
@@ -67,21 +75,32 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
           // calculate text vector
           // vectorize the label so we can draw it at any scale
           if (vectorizeWorker) {
-            tasks.push(vectorizeWorker.postMessage({
+            tasks.push(
+              vectorizeWorker.postMessage({
+                fontDetail,
+                name: inst_name,
+                axis: inst_axis,
+                offsetInst: inst_label.offsets.inst,
+                offsetNew: inst_label.offsets.new,
+              })
+            );
+          } else {
+            const shader = vectorize_label(
               fontDetail,
-              name: inst_name,
-              axis: inst_axis,
-              offsetInst: inst_label.offsets.inst,
-              offsetNew: inst_label.offsets.new,
-            }));
-          } else{
-            const shader = vectorize_label(fontDetail, inst_axis, inst_name, false);
+              inst_axis,
+              inst_name,
+              false
+            );
             text_triangles[inst_axis][inst_name] = shader;
             shader.inst_offset = [0, inst_label.offsets.inst];
             shader.new_offset = [0, inst_label.offsets.new];
             text_triangles.draw[inst_axis].push(shader);
             store.dispatch(
-              dropFromLabelQueue({ queue: "low", axis: inst_axis, label: inst_name })
+              dropFromLabelQueue({
+                queue: "low",
+                axis: inst_axis,
+                label: inst_name,
+              })
             );
           }
         }
@@ -98,14 +117,18 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         result.shader.new_offset = [0, result.offsetNew];
         text_triangles.draw[inst_axis].push(result.shader);
         store.dispatch(
-          dropFromLabelQueue({ queue: "low", axis: result.axis, label: result.name })
+          dropFromLabelQueue({
+            queue: "low",
+            axis: result.axis,
+            label: result.name,
+          })
         );
       });
       store.dispatch(
         mutateVisualizationState({
           text_triangles: {
             ...text_triangles,
-          }
+          },
         })
       );
       store.dispatch(
@@ -115,11 +138,11 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
       );
     });
   } else {
-      // sync update
-      store.dispatch(
-        mutateVisualizationState({
-          text_triangles,
-        })
-      );
+    // sync update
+    store.dispatch(
+      mutateVisualizationState({
+        text_triangles,
+      })
+    );
   }
 }
