@@ -23,6 +23,7 @@ export default function singleClicking(
     onClick({
       row: mouseover.row.name || null,
       col: mouseover.col.name || null,
+      clickType: tooltipType,
     });
   }
 

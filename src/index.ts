@@ -14,6 +14,7 @@ import {
   setOpacityScale,
 } from "./state/reducers/matrixSlice";
 import { NetworkState } from "./state/reducers/networkSlice";
+import { TooltipState } from "./state/reducers/tooltip/tooltipSlice";
 import { RootState, store } from "./state/store/store";
 import { createCanvasContainer } from "./ui/functions/createCanvasContainer";
 import { UI } from "./ui/ui";
@@ -22,8 +23,14 @@ import zoom_rules_high_mat from "./zoom/zoomRulesHighMat";
 
 export type ClustergrammerInstance = {};
 
+export type OnClickCallbackProps = {
+  row: string | null;
+  col: string | null;
+  clickType: TooltipState["tooltip_type"];
+};
+
 export type OnClickCallback =
-  | (({ row, col }: { row: string | null; col: string | null }) => void)
+  | (({ row, col, clickType }: OnClickCallbackProps) => void)
   | undefined;
 
 export type ClustergrammerProps = {
