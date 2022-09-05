@@ -13,8 +13,11 @@ import vectorize_label from "./vectorizeLabel";
 let vectorizeWorker = undefined;
 // check it offscreencanvs is supported.
 if (typeof OffscreenCanvas !== "undefined") {
+  // https://stackoverflow.com/a/45578811
   vectorizeWorker = new WebworkerPromise(
-    new Worker(new URL("./vectorizeWorker.js", import.meta.url))
+    new Worker(new URL("./vectorizeWorker.js", import.meta.url), {
+      type: "module",
+    })
   );
 }
 export default function gather_text_triangles(store, viz_area, inst_axis) {
