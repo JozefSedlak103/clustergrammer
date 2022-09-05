@@ -33,7 +33,7 @@ export type ClustergrammerProps = {
   width: number | string;
   height: number | string;
   showControls?: boolean;
-  onClick: OnClickCallback;
+  onClick?: OnClickCallback;
   disableTooltip?: boolean;
   enabledTooltips?: Array<"dendro" | "cat" | "cell" | "label" | string>;
   labelLength?: number;
