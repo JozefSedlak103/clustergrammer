@@ -22,13 +22,9 @@ import zoom_rules_high_mat from "./zoom/zoomRulesHighMat";
 
 export type ClustergrammerInstance = {};
 
-export type OnClickCallback = ({
-  row,
-  col,
-}: {
-  row: string | null;
-  col: string | null;
-}) => void;
+export type OnClickCallback =
+  | (({ row, col }: { row: string | null; col: string | null }) => void)
+  | undefined;
 
 export type ClustergrammerProps = {
   use_hzome?: boolean;
@@ -37,7 +33,7 @@ export type ClustergrammerProps = {
   width: number | string;
   height: number | string;
   showControls?: boolean;
-  onClick?: OnClickCallback;
+  onClick: OnClickCallback;
   disableTooltip?: boolean;
   enabledTooltips?: Array<"dendro" | "cat" | "cell" | "label" | string>;
   labelLength?: number;

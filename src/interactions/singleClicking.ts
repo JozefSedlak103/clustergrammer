@@ -14,8 +14,11 @@ export default function singleClicking(
   dispatch(mutateAnimationState({ last_click: state.animation.time }));
   dispatch(mutateInteractionState({ manual_update_cats: false }));
 
+  const tooltipType = state.tooltip.tooltip_type;
+
   // onClick callback
-  if (onClick) {
+  if (onClick && tooltipType && tooltipType !== "out-of-bounds") {
+    // TODO: replace tooltip type strings with enum
     const mouseover = state.interaction.mouseover;
     onClick({
       row: mouseover.row.name || null,
@@ -24,7 +27,7 @@ export default function singleClicking(
   }
 
   // dendrogram click
-  if (state.tooltip.tooltip_type.includes("-dendro")) {
+  if (tooltipType.includes("-dendro")) {
     if (state.tooltip.permanent_tooltip === false) {
       // TODO: do whatever we want to do when clicking the dendrogram
     }
