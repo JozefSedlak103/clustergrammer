@@ -15,8 +15,6 @@ export const createCanvasContainer = (
       .append("div")
       .attr("class", CANVAS_CONTAINER_CLASSNAME)
       .style("position", "relative")
-      .style("margin-right", "-25px")
-      .style("margin-bottom", "-25px")
       .style("cursor", "default");
   }
 
