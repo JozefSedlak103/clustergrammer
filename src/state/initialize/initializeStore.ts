@@ -73,7 +73,7 @@ export default function initialize_params(
   getInitialOrderState(store);
 
   // labels setup
-  initializeLabels(store);
+  initializeLabels(store, args.labelLength);
 
   // category viz data setup
   generateCatVizInfo(store);

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge, without } from "lodash";
+import { MAX_LABEL_LENGTH } from "../../../matrixLabels/labels.const";
 
 export interface LabelQueue {
   [x: string]: string[];
@@ -56,6 +57,7 @@ const initialState: LabelsState = {
     low: { row: [], col: [] },
   },
   max_label_queue: 2000,
+  labelLength: MAX_LABEL_LENGTH,
 };
 
 export const labelsSlice = createSlice({

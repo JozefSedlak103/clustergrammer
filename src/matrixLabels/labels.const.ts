@@ -1,1 +1,1 @@
-export const MAX_LABEL_LENGTH = 15;
+export const MAX_LABEL_LENGTH = 10;

@@ -3,7 +3,7 @@ import * as _ from "underscore";
 import genOrderedLabels from "../../../matrixLabels/genOrderedLabels";
 import { mutateLabelsState } from "../../reducers/labels/labelsSlice";
 
-export default function initializeLabels(store) {
+export default function initializeLabels(store, labelLength) {
   const state = store.getState();
 
   const labels = cloneDeep(state.labels);
@@ -21,6 +21,8 @@ export default function initializeLabels(store) {
     // pre-calc text triangles if low enough number of labels
     labels.precalc[inst_axis] = false;
   });
-  store.dispatch(mutateLabelsState(labels));
+  store.dispatch(
+    mutateLabelsState({ ...labels, ...(labelLength ? { labelLength } : {}) })
+  );
   genOrderedLabels(store);
 }
