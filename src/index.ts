@@ -40,6 +40,7 @@ export type ClustergrammerProps = {
   width: number | string;
   height: number | string;
   showControls?: boolean;
+  showDendroSliders?: boolean;
   onClick?: OnClickCallback;
   disableTooltip?: boolean;
   enabledTooltips?: Array<"dendro" | "cat" | "cell" | "label" | string>;
@@ -61,7 +62,14 @@ const adjustOpacity =
 function clustergrammer_gl(
   args: ClustergrammerProps
 ): ClustergrammerInstance | null {
-  const { container, showControls = true, width, height, onClick } = args;
+  const {
+    container,
+    showControls = true,
+    showDendroSliders = true,
+    width,
+    height,
+    onClick,
+  } = args;
 
   // check if container is defined
   if (
@@ -95,6 +103,7 @@ function clustergrammer_gl(
       vizWidth: width,
       vizHeight: height,
       showControls,
+      showDendroSliders,
     });
 
     // zoom rules

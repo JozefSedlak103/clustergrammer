@@ -17,6 +17,7 @@ export type UIProps = {
   vizWidth: number | string;
   vizHeight: number | string;
   showControls: boolean;
+  showDendroSliders: boolean;
 };
 
 export class UI {
@@ -28,6 +29,7 @@ export class UI {
       catArgsManager,
       container,
       showControls,
+      showDendroSliders,
     } = props;
     if (showControls) {
       build_control_panel(
@@ -38,7 +40,9 @@ export class UI {
         camerasManager
       );
     }
-    build_dendrogram_sliders(regl, store);
+    if (showDendroSliders) {
+      build_dendrogram_sliders(regl, store);
+    }
     ini_canvas_mouseover(store, container);
     run_viz(regl, store, catArgsManager, camerasManager);
   }

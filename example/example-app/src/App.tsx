@@ -16,7 +16,8 @@ function Clustergrammer() {
       showControls: true,
       onClick: (row: string | null, col: string | null) => console.log(row, col),
       // disableTooltip: true,
-      enabledTooltips: ["dendro", "cell"]
+      enabledTooltips: ["dendro", "cell"],
+      showDendroSliders: false
     };
     cgl(args);
   }, [containerRef]);
