@@ -16,6 +16,7 @@ import {
   setNodeCanvasPos,
 } from "../reducers/nodeCanvasPosSlice";
 import { setTooltipState } from "../reducers/tooltip/tooltipSlice";
+import { mutateVisualizationState } from "../reducers/visualization/visualizationSlice";
 import { RootState } from "../store/store";
 import calcAlphaOrder from "./functions/calcAlphaOrder";
 import calcMatArr from "./functions/calcMatArr";
@@ -35,6 +36,11 @@ export default function initialize_params(
   store: Store<RootState>
 ) {
   const rootElementId = "#" + args.container.id;
+  store.dispatch(
+    mutateVisualizationState({
+      rootElementId,
+    })
+  );
 
   // network setup
   const initialNetwork = args.network;

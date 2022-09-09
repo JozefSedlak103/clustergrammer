@@ -1,6 +1,6 @@
 import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
-import { noop } from "lodash";
+import { noop, uniqueId } from "lodash";
 import { Regl } from "regl";
 import { CamerasManager } from "./cameras/camerasManager";
 import { CatArgsManager } from "./cats/manager/catArgsManager";
@@ -83,6 +83,10 @@ function clustergrammer_gl(
     // NOTE: this must be done before anything else,
     // all renders and the store initialization depends on it
     const regl = initializeRegl(canvas_container);
+
+    // create storage uuid (for multiple clustergrammer instances)
+    const storageUuid = uniqueId(container.id);
+    window.localStorage.setItem(container.id, storageUuid);
 
     // initialize store defaults now that we have a REGL instance
     // NOTE: do this before any components, as the components access
