@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import cgl, { ClustergrammerProps } from "./cg";
 // import data from "./data/cytof.json";
-import data from "./data/cytof.json";
+import cytofData from "./data/cytof.json";
+import multViewData from './data/mult_view.json';
 
 
-const getArgs = (container: HTMLElement): ClustergrammerProps => {
+const getArgs = (container: HTMLElement, data: any): ClustergrammerProps => {
   return {
     container,
     network: data as unknown as ClustergrammerProps["network"],
@@ -24,13 +25,13 @@ function Clustergrammer() {
 
   useEffect(() => {
     if (!containerRef1.current) return;
-    cgl(getArgs(containerRef1.current));
+    cgl(getArgs(containerRef1.current, cytofData));
   }, [containerRef1]);
 
 
   useEffect(() => {
     if (!containerRef2.current) return;
-    cgl(getArgs(containerRef2.current));
+    cgl(getArgs(containerRef2.current, multViewData));
   }, [containerRef2]);
 
   return (
