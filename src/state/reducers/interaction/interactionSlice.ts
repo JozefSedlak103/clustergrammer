@@ -5,7 +5,6 @@ import getInitialInteractionState from "./getInitialInteractionState";
 export interface InteractionState {
   total: number;
   still_interacting: boolean;
-  still_mouseover: boolean;
   need_reset_cat_opacity: boolean;
   mouseover: {
     [x: string]: any;

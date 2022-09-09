@@ -11,7 +11,12 @@ export default (function draw_background_calculations(store) {
     const { labels: oldLabels } = store.getState();
     if (oldLabels.labels_queue.high[inst_axis].length > 0) {
       const inst_name = oldLabels.labels_queue.high[inst_axis][0];
-      const inst_text_vect = vectorize_label(store.getState().labels.font_detail, inst_axis, inst_name, false);
+      const inst_text_vect = vectorize_label(
+        store.getState().labels.font_detail,
+        inst_axis,
+        inst_name,
+        false
+      );
       store.dispatch(
         mutateVisualizationState({
           text_triangles: {

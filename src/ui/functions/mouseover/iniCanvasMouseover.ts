@@ -101,6 +101,12 @@ export default function ini_canvas_mouseover(
       } else {
         hideTooltip();
       }
+    } else {
+      console.log(
+        !!tooltip,
+        !!state.tooltip.show_tooltip,
+        !state.tooltip.disable_tooltip
+      );
     }
   });
   canvas.addEventListener("mouseleave", () => {

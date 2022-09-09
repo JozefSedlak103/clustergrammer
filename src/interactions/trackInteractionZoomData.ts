@@ -6,7 +6,6 @@ import { InteractionEvent } from "../types/general";
 import zoom_rules_low_mat from "../zoom/zoomRulesLowMat";
 import findMouseoverElement from "./findMouseoverElement";
 import keepTrackOfInteractions from "./keepTrackOfInteractions";
-import keepTrackOfMouseovers from "./keepTrackOfMouseovers";
 
 export default (function track_interaction_zoom_data(
   store: Store<RootState>,
@@ -65,7 +64,6 @@ export default (function track_interaction_zoom_data(
     keepTrackOfInteractions(store);
   } else if (ev.type === "mousemove") {
     // trying to keep track of interactions for mouseovers
-    keepTrackOfMouseovers(store);
     findMouseoverElement(store, ev);
   }
 });

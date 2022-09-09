@@ -13,8 +13,8 @@ function Clustergrammer() {
       network: data as unknown as ClustergrammerProps["network"],
       width: "100%",
       height: "100%",
-      showControls: true,
-      onClick: (row: string | null, col: string | null) => console.log(row, col),
+      showControls: false,
+      onClick: ({ row, col }) => console.log(row, col),
       // disableTooltip: true,
       enabledTooltips: ["dendro", "cell"],
       showDendroSliders: false
