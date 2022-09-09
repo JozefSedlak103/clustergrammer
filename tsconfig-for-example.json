@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "watch": true,
         "module": "esnext",
         "outDir": "example/example-app/src/cg",
         "target": "esnext",
