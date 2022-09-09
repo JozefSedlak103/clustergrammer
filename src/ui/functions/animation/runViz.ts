@@ -71,7 +71,6 @@ export default function run_viz(
       draw_background_calculations(store);
     } else if (
       store.getState().labels.draw_labels ||
-      // fourthState.tooltip.show_tooltip || // TODO: remove if not needed?
       store.getState().dendro.update_dendro
     ) {
       drawLabelsTooltipsOrDendro(regl, store, catArgsManager, camerasManager);
