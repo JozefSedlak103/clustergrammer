@@ -3,32 +3,52 @@ import cgl, { ClustergrammerProps } from "./cg";
 // import data from "./data/cytof.json";
 import data from "./data/cytof.json";
 
+
+const getArgs = (container: HTMLElement): ClustergrammerProps => {
+  return {
+    container,
+    network: data as unknown as ClustergrammerProps["network"],
+    width: "100%",
+    height: "100%",
+    showControls: false,
+    onClick: ({ row, col }) => console.log(row, col),
+    // disableTooltip: true,
+    enabledTooltips: ["dendro", "cell"],
+    showDendroSliders: false
+  }
+}
+
 function Clustergrammer() {
-  const containerRef = useRef(null);
+  const containerRef1 = useRef<HTMLDivElement>(null);
+  const containerRef2 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return ;
-    const args: ClustergrammerProps = {
-      container: containerRef.current,
-      network: data as unknown as ClustergrammerProps["network"],
-      width: "100%",
-      height: "100%",
-      showControls: true,
-      onClick: (row: string | null, col: string | null) => console.log(row, col),
-      // disableTooltip: true,
-      enabledTooltips: ["dendro", "cell"],
-      showDendroSliders: false
-    };
-    cgl(args);
-  }, [containerRef]);
+    if (!containerRef1.current) return;
+    cgl(getArgs(containerRef1.current));
+  }, [containerRef1]);
+
+
+  useEffect(() => {
+    if (!containerRef2.current) return;
+    cgl(getArgs(containerRef2.current));
+  }, [containerRef2]);
 
   return (
-    <div style={{ height: "800px", width: "800px" }}>
-      <div
-        id="cgm"
-        ref={containerRef}
-        style={{ height: "100%", width: "100%" }}
-      />
+    <div style={{ display: "flex"}}>
+      <div id="cgm-container-2" style={{ height: "800px", width: "800px" }}>
+        <div
+          id="cgm1"
+          ref={containerRef1}
+          style={{ height: "100%", width: "100%" }}
+        />
+      </div>
+      <div id="cgm-container-2" style={{ height: "800px", width: "800px" }}>
+        <div
+          id="cgm2"
+          ref={containerRef2}
+          style={{ height: "100%", width: "100%" }}
+        />
+      </div>
     </div>
   );
 }
