@@ -1,9 +1,7 @@
 import * as _ from "underscore";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
 
 export default function genOrderedLabels(store) {
-  const state = store.getState();
-  const { network, labels, cat_data, order } = state;
+  const { network, labels, cat_data, order } = store.selectAll();
   // Generate lists of ordered label and category names for mouseover
   let i_order;
   const ordered_labels = {};
@@ -37,7 +35,7 @@ export default function genOrderedLabels(store) {
   });
 
   store.dispatch(
-    mutateLabelsState({
+    store.actions.mutateLabelsState({
       ordered_labels,
     })
   );

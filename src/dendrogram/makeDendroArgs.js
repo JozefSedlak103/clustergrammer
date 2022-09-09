@@ -4,22 +4,20 @@ import { rotation, scaling } from "../draws/mat3Transform";
 import make_dendro_arr from "./makeDendroArr";
 
 export default (function makeDendroArgs(regl, store, inst_axis) {
-  const state = store.getState();
-
   let rotation_radians;
   let heat_size;
   let mat_size_offset;
   if (inst_axis === "row") {
     rotation_radians = 0;
-    heat_size = state.visualization.viz_dim.heat_size.y;
-    mat_size_offset = state.visualization.viz_dim.mat_size.x;
+    heat_size = store.select("visualization").viz_dim.heat_size.y;
+    mat_size_offset = store.select("visualization").viz_dim.mat_size.x;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
-    heat_size = state.visualization.viz_dim.heat_size.x;
-    mat_size_offset = state.visualization.viz_dim.mat_size.y;
+    heat_size = store.select("visualization").viz_dim.heat_size.x;
+    mat_size_offset = store.select("visualization").viz_dim.mat_size.y;
   }
-  const num_labels = state.labels["num_" + inst_axis];
-  const dendro_width = state.dendro.tri_height;
+  const num_labels = store.select("labels")["num_" + inst_axis];
+  const dendro_width = store.select("dendro").tri_height;
   const tri_width = heat_size / num_labels;
   const dendro_arr = make_dendro_arr(store, inst_axis);
   const dendro_buffer = regl.buffer({
@@ -75,9 +73,9 @@ export default (function makeDendroArgs(regl, store, inst_axis) {
 
     attributes: {
       position: [
-        [state.dendro.trap_float, 2 * tri_width],
+        [store.select("dendro").trap_float, 2 * tri_width],
         [dendro_width, tri_width],
-        [state.dendro.trap_float, 0],
+        [store.select("dendro").trap_float, 0],
       ],
       dendro_att: {
         buffer: dendro_buffer,

@@ -7,18 +7,15 @@ export type NodeCanvasPos = {
 
 const initialState: NodeCanvasPos = {} as NodeCanvasPos;
 
-export const categoriesSlice = createSlice({
-  name: "node_canvas_pos",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setNodeCanvasPos: (state, action: PayloadAction<NodeCanvasPos>) => {
-      state = action.payload;
-      return state;
+export const nodeCanvasPosSlice = (id: string) =>
+  createSlice({
+    name: `${id}_node_canvas_pos`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setNodeCanvasPos: (state, action: PayloadAction<NodeCanvasPos>) => {
+        state = action.payload;
+        return state;
+      },
     },
-  },
-});
-
-export const { setNodeCanvasPos } = categoriesSlice.actions;
-
-export default categoriesSlice.reducer;
+  });

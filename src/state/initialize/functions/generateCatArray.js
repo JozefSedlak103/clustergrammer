@@ -1,7 +1,7 @@
 import * as _ from "underscore";
 
 export default (function generateCatArray(store, inst_axis) {
-  const { network } = store.getState();
+  const network = store.select("network");
   const title_sep = ": ";
   const cat_data = [];
   const check_node = network[inst_axis + "_nodes"][0];

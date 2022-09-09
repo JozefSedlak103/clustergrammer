@@ -4,7 +4,7 @@ export default (function makeCatPositionArray(store, inst_axis) {
     visualization: { viz_dim },
     network,
     order,
-  } = store.getState();
+  } = store.selectAll();
   const inst_order = order.new[inst_axis];
   const num_labels = labels["num_" + inst_axis];
   // category tiles have fixed heights

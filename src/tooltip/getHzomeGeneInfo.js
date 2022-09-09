@@ -1,7 +1,6 @@
 import axios from "axios";
 import { select } from "d3-selection";
 import * as _ from "underscore";
-import { mutateHzomeGeneData } from "../state/reducers/hzomeSlice";
 
 function setTooltip(tooltip_id, data, gene_symbol) {
   if (data.name !== undefined) {
@@ -38,7 +37,9 @@ function get_request(dispatch, ini_gene_symbol) {
         name: response.data.name,
         description: response.data.description,
       };
-      dispatch(mutateHzomeGeneData({ [gene_symbol]: newGeneData }));
+      dispatch(
+        store.actions.mutateHzomeGeneData({ [gene_symbol]: newGeneData })
+      );
     })
     .catch(function (error) {
       console.error("Error while trying to get hzome: ", error);
@@ -46,10 +47,9 @@ function get_request(dispatch, ini_gene_symbol) {
 }
 
 export function getHzomeGeneInfo(store, gene_symbol) {
-  const state = store.getState();
-  if (_.has(state.hzome.gene_data, gene_symbol)) {
-    const inst_data = state.hzome.gene_data[gene_symbol];
-    setTooltip(state.tooltip.tooltip_id, inst_data, gene_symbol);
+  if (_.has(store.select("hzome").gene_data, gene_symbol)) {
+    const inst_data = store.select("hzome").gene_data[gene_symbol];
+    setTooltip(store.select("tooltip").tooltip_id, inst_data, gene_symbol);
   } else {
     get_request(store.dispatch, gene_symbol);
   }

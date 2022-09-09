@@ -1,12 +1,6 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import WebworkerPromise from "webworker-promise";
-import {
-  dropFromLabelQueue,
-  mutateLabelsState,
-  pushHighQueueLabel,
-} from "../state/reducers/labels/labelsSlice";
-import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
 import { MAX_LABEL_LENGTH } from "./labels.const";
 import vectorize_label from "./vectorizeLabel";
 
@@ -25,7 +19,7 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
     visualization: { text_triangles: oldTextTriangles },
     labels: oldLabels,
     network,
-  } = store.getState();
+  } = store.selectAll();
 
   const tasks = [];
   const labels = cloneDeep(oldLabels);
@@ -68,7 +62,10 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         text_triangles.draw[inst_axis].push(inst_text_vect);
       } else {
         store.dispatch(
-          pushHighQueueLabel({ axis: inst_axis, label: inst_name })
+          store.actions.pushHighQueueLabel({
+            axis: inst_axis,
+            label: inst_name,
+          })
         );
 
         /*
@@ -99,7 +96,7 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
             shader.new_offset = [0, inst_label.offsets.new];
             text_triangles.draw[inst_axis].push(shader);
             store.dispatch(
-              dropFromLabelQueue({
+              store.actions.dropFromLabelQueue({
                 queue: "low",
                 axis: inst_axis,
                 label: inst_name,
@@ -120,7 +117,7 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         result.shader.new_offset = [0, result.offsetNew];
         text_triangles.draw[inst_axis].push(result.shader);
         store.dispatch(
-          dropFromLabelQueue({
+          store.actions.dropFromLabelQueue({
             queue: "low",
             axis: result.axis,
             label: result.name,
@@ -128,14 +125,14 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         );
       });
       store.dispatch(
-        mutateVisualizationState({
+        store.actions.mutateVisualizationState({
           text_triangles: {
             ...text_triangles,
           },
         })
       );
       store.dispatch(
-        mutateLabelsState({
+        store.actions.mutateLabelsState({
           draw_labels: true,
         })
       );
@@ -143,7 +140,7 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
   } else {
     // sync update
     store.dispatch(
-      mutateVisualizationState({
+      store.actions.mutateVisualizationState({
         text_triangles,
       })
     );

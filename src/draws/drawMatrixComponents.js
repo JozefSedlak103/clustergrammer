@@ -22,7 +22,7 @@ export default (function drawMatrixComponents(regl, store, cameras, reglProps) {
         */
     regl(reglProps)({
       interp_prop: interpFun(store),
-      run_animation: store.getState().animation.running,
+      run_animation: store.select("animation").running,
     });
   });
 });

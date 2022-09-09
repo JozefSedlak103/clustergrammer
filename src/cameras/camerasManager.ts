@@ -1,8 +1,7 @@
-import { Store } from "@reduxjs/toolkit";
 import { merge } from "lodash";
 import { Regl } from "regl";
 import make_matrix_args from "../matrixCells/makeMatrixArgs";
-import { RootState } from "../state/store/store";
+import { NamespacedStore } from "../state/store/store";
 import { CameraInstance, Cameras } from "./cameras";
 import make_cameras from "./functions/makeCameras";
 import reset_cameras from "./functions/resetCameras";
@@ -12,13 +11,13 @@ export class CamerasManager {
   #reglProps: any;
   #cameras: Record<string, CameraInstance>;
 
-  constructor(regl: Regl, store: Store<RootState>) {
+  constructor(regl: Regl, store: NamespacedStore) {
     this.#regl = regl;
     this.#cameras = make_cameras(this.#regl, store) as unknown as Cameras;
     this.#reglProps = make_matrix_args(regl, store);
   }
 
-  resetCameras(store: Store<RootState>) {
+  resetCameras(store: NamespacedStore) {
     const cameras = reset_cameras(this.#regl, store);
     this.#cameras = cameras as unknown as Cameras;
   }
@@ -31,7 +30,7 @@ export class CamerasManager {
     this.#reglProps = merge(this.#reglProps, newProps);
   }
 
-  remakeMatrixArgs(store: Store<RootState>) {
+  remakeMatrixArgs(store: NamespacedStore) {
     this.#reglProps = make_matrix_args(this.#regl, store);
   }
 

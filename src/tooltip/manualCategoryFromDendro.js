@@ -1,8 +1,5 @@
 import { select } from "d3-selection";
 import manualUpdateToCats from "../cats/functions/manualUpdateToCats";
-import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
-import { mutateCatVizState } from "../state/reducers/catVizSlice";
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 
 export default function manual_category_from_dendro(
   regl,
@@ -12,7 +9,7 @@ export default function manual_category_from_dendro(
   selected_clust_names,
   axis
 ) {
-  const { tooltip, visualization, cat_data } = store.getState();
+  const { tooltip, visualization, cat_data } = store.selectAll();
   const dispatch = store.dispatch;
 
   // Manual Category
@@ -99,7 +96,7 @@ export default function manual_category_from_dendro(
     .style("display", "inline-block")
     .style("color", "black")
     .on("change", () => {
-      const changeState = store.getState();
+      const changeState = store.selectAll();
       // if input matches color key, set color to pre-defined cat color
       // /////////////////////////////////////////////////////////////////
       const new_cat = select(
@@ -141,7 +138,7 @@ export default function manual_category_from_dendro(
     .style("margin-left", "5px")
     .style("color", "black")
     .on("input", function () {
-      select(store.getState().tooltip.tooltip_id + " .color-preview").style(
+      select(store.select("tooltip").tooltip_id + " .color-preview").style(
         "background-color",
         // TODO: fix this usage here
         // eslint-disable-next-line no-invalid-this
@@ -160,20 +157,25 @@ export default function manual_category_from_dendro(
     .style("margin-right", "2px")
     .style("background-color", "white")
     .on("click", () => {
-      const state = store.getState();
-      if (state.cat_data.showing_color_picker === false) {
-        select(state.tooltip.tooltip_id + " .color_picker_div")
+      const state = store.selectAll();
+      if (store.select("cat_data").showing_color_picker === false) {
+        select(store.select("tooltip").tooltip_id + " .color_picker_div")
           .style("height", color_picker_height + "px")
           .style("display", "block");
-        select(state.tooltip.tooltip_id).style("margin-top", function () {
-          const old_top_margin = select(state.tooltip.tooltip_id)
-            .style("margin-top")
-            .replace("px");
-          const new_top_margin =
-            String(parseInt(old_top_margin) - color_picker_height) + "px";
-          return new_top_margin;
-        });
-        dispatch(mutateCategoriesState({ showing_color_picker: true }));
+        select(store.select("tooltip").tooltip_id).style(
+          "margin-top",
+          function () {
+            const old_top_margin = select(store.select("tooltip").tooltip_id)
+              .style("margin-top")
+              .replace("px");
+            const new_top_margin =
+              String(parseInt(old_top_margin) - color_picker_height) + "px";
+            return new_top_margin;
+          }
+        );
+        dispatch(
+          store.actions.mutateCategoriesState({ showing_color_picker: true })
+        );
       }
     });
   // update category button
@@ -188,34 +190,39 @@ export default function manual_category_from_dendro(
     .style("color", "white")
     .style("cursor", "pointer")
     .on("click", () => {
-      const state = store.getState();
-      const new_cat = select(state.tooltip.tooltip_id + " .custom-cat-input")
+      const state = store.selectAll();
+      const new_cat = select(
+        store.select("tooltip").tooltip_id + " .custom-cat-input"
+      )
         .node()
         .value.trim();
-      let inst_color = select(state.tooltip.tooltip_id + " .custom-cat-color")
+      let inst_color = select(
+        store.select("tooltip").tooltip_id + " .custom-cat-color"
+      )
         .node()
         .value.trim();
       if (new_cat !== "") {
         // save category and color to dictionary
-        if (axis + "_color_dict" in state.cat_data.manual_category) {
-          state.cat_data.manual_category[axis + "_color_dict"][new_cat] =
-            inst_color;
+        if (axis + "_color_dict" in store.select("cat_data").manual_category) {
+          store.select("cat_data").manual_category[axis + "_color_dict"][
+            new_cat
+          ] = inst_color;
         }
         if (inst_color === "") {
           inst_color = "white";
         }
         const inst_labels = selected_clust_names;
         // Only allowing custom naming of first column
-        const cat_title = state.cat_data[axis][0].cat_title;
+        const cat_title = store.select("cat_data")[axis][0].cat_title;
         dispatch(
-          mutateCatVizState({
+          store.actions.mutateCatVizState({
             global_cat_colors: {
               [new_cat]: inst_color,
             },
           })
         );
         dispatch(
-          mutateInteractionState({
+          store.actions.mutateInteractionState({
             manual_update_cats: true,
           })
         );

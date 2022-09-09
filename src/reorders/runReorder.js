@@ -1,9 +1,6 @@
 import { select } from "d3-selection";
 import { cloneDeep } from "lodash";
 import updateTextTriangleOrder from "../matrixLabels/updateTextTriangleOrder";
-import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
-import { mutateOrderState } from "../state/reducers/order/orderSlice";
-import { setVisualizationState } from "../state/reducers/visualization/visualizationSlice";
 import reorderCatArgs from "./reorderCatArgs";
 import reorderMatrixArgs from "./reorderMatrixArgs";
 
@@ -23,9 +20,9 @@ export default (function runReorder(
     select("." + inst_axis + "_dendro_slider_svg").style("display", "none");
   }
 
-  dispatch(mutateAnimationState({ run_animation: true }));
+  dispatch(store.actions.mutateAnimationState({ run_animation: true }));
   dispatch(
-    mutateOrderState({
+    store.actions.mutateOrderState({
       new: {
         [inst_axis]: new_order,
       },
@@ -34,7 +31,7 @@ export default (function runReorder(
   reorderMatrixArgs(regl, store, camerasManager);
   reorderCatArgs(store, catArgsManager);
 
-  const reorderedState = store.getState();
+  const reorderedState = store.selectAll();
   const newVisualizationState = cloneDeep(reorderedState.visualization);
   // either update the existing draw text_triangles or trash them
   if (
@@ -47,5 +44,5 @@ export default (function runReorder(
   } else {
     newVisualizationState.text_triangles.draw[inst_axis] = false;
   }
-  dispatch(setVisualizationState(newVisualizationState));
+  dispatch(store.actions.setVisualizationState(newVisualizationState));
 });

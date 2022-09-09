@@ -1,19 +1,15 @@
-import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
 import { cloneDeep, range } from "lodash";
 import { Regl } from "regl";
 import * as _ from "underscore";
 import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
-import { mutateNetworkState } from "../state/reducers/networkSlice";
-import { setSearchedRows } from "../state/reducers/searchSlice";
-import { RootState } from "../state/store/store";
 import { Axis } from "../types/general";
 import runReorder from "./runReorder";
 
 export default (function customLabelReorder(
   regl: Regl,
-  store: Store<RootState>,
+  store: NamespacedStore,
   catArgsManager: CatArgsManager,
   camerasManager: CamerasManager,
   inst_axis: Axis
@@ -23,14 +19,14 @@ export default (function customLabelReorder(
     interaction: { mouseover },
     labels,
     network: oldNetwork,
-  } = store.getState();
+  } = store.selectAll();
   // update custom label order
   const full_name = mouseover[inst_axis].name;
   const found_label_index = _.indexOf(
     oldNetwork[inst_axis + "_node_names"],
     full_name
   );
-  dispatch(setSearchedRows(full_name.split(", ")));
+  dispatch(store.actions.setSearchedRows(full_name.split(", ")));
   let tmp_arr: any[] | undefined = [];
   let other_axis: Axis;
   if (inst_axis === "col") {
@@ -53,10 +49,10 @@ export default (function customLabelReorder(
   });
   const num_other_labels = labels["num_" + other_axis];
 
-  const { network } = store.getState();
+  const network = store.select("network");
   const newNetwork = cloneDeep(network);
   dispatch(
-    mutateNetworkState({
+    store.actions.mutateNetworkState({
       [other_axis + "_nodes"]: _.map(
         newNetwork[other_axis + "_nodes"],
         function (inst_node, node_index) {
@@ -83,7 +79,7 @@ export default (function customLabelReorder(
   );
 
   dispatch(
-    mutateNetworkState({
+    store.actions.mutateNetworkState({
       [other_axis + "_nodes"]: newAxisNodes,
     })
   );
@@ -91,7 +87,7 @@ export default (function customLabelReorder(
   runReorder(regl, store, catArgsManager, camerasManager, other_axis, "custom");
   // unselect reorder buttons
   const button_color = "#eee";
-  const { visualization } = store.getState();
+  const visualization = store.select("visualization");
   select(visualization.rootElementId + " ." + other_axis + "-reorder-buttons")
     .selectAll("rect")
     .style("stroke", button_color);

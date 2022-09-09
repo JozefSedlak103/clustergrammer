@@ -7,10 +7,6 @@ import download_matrix from "../../../download/downloadMatrix";
 import download_metadata from "../../../download/downloadMetadata";
 import draw_webgl_layers from "../../../draws/drawWebglLayers";
 import runReorder from "../../../reorders/runReorder";
-import { mutateCatVizState } from "../../../state/reducers/catVizSlice";
-import { setDelimiterForFileType } from "../../../state/reducers/downloadSlice";
-import { setSearchedRows } from "../../../state/reducers/searchSlice";
-import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice";
 import { CONTROL_PANEL_CLASSNAME } from "../../ui.const";
 import buildReclusterSection from "./buildReclusterSection";
 
@@ -21,7 +17,6 @@ export default function build_control_panel(
   catArgsManager,
   camerasManager
 ) {
-  const state = store.getState();
   const dispatch = store.dispatch;
   const i_height = 135;
   const control_panel_color = "white";
@@ -44,7 +39,7 @@ export default function build_control_panel(
     .attr("height", i_height)
     .attr("width", "100%")
     .on("mouseover", function () {
-      dispatch(mutateTooltipState({ in_bounds_tooltip: false }));
+      dispatch(store.actions.mutateTooltipState({ in_bounds_tooltip: false }));
     });
 
   control_svg
@@ -112,13 +107,13 @@ export default function build_control_panel(
     .classed("panel_button_titles", true)
     .classed("reorder_button_title", true)
     .on("click", function () {
-      const clickState = store.getState();
+      const clickState = store.selectAll();
       selectAll(
         clickState.visualization.rootElementId + " .panel_button_titles"
       ).attr("opacity", 0.5);
       select(this).attr("opacity", 1.0);
       if (clickState.cat_viz.current_panel === "recluster") {
-        dispatch(mutateCatVizState({ current_panel: "reorder" }));
+        dispatch(store.actions.mutateCatVizState({ current_panel: "reorder" }));
         // modify buttons
         select(
           clickState.visualization.rootElementId + " .panel_button_title"
@@ -220,11 +215,11 @@ export default function build_control_panel(
       })
       .on("click", function (_, d) {
         const clean_order = d.replace("sum", "rank").replace("var", "rankvar");
-        if (store.getState().order.inst[i_axis] !== clean_order) {
+        if (store.select("order").inst[i_axis] !== clean_order) {
           /* category order is already calculated */
           runReorder(regl, store, catArgsManager, camerasManager, i_axis, d);
           select(
-            store.getState().visualization.rootElementId +
+            store.select("visualization").rootElementId +
               " ." +
               i_axis +
               "-reorder-buttons"
@@ -243,7 +238,7 @@ export default function build_control_panel(
       .attr("ry", 10)
       .attr("stroke", function (d) {
         let i_color;
-        if (state.order.inst[i_axis] === d) {
+        if (store.select("order").inst[i_axis] === d) {
           i_color = active_button_color;
         } else {
           i_color = button_color;
@@ -276,7 +271,7 @@ export default function build_control_panel(
   // row search
   // /////////////////
   const search_container = select(
-    state.visualization.rootElementId + " .control-container"
+    store.select("visualization").rootElementId + " .control-container"
   )
     .append("div")
     .classed("row_search_container", true)
@@ -286,7 +281,7 @@ export default function build_control_panel(
     .style("margin-top", "10px")
     .style("top", "37px")
     .style("left", "375px");
-  const root_id = state.visualization.rootElementId.replace("#", "");
+  const root_id = store.select("visualization").rootElementId.replace("#", "");
   search_container
     .append("input")
     .classed("form-control", true)
@@ -300,7 +295,7 @@ export default function build_control_panel(
     .style("margin-top", "5px")
     .style("display", "inline-block")
     .style("padding", "1pt 2pt");
-  const row_names = state.network.row_node_names;
+  const row_names = store.select("network").row_node_names;
   search_container
     .append("datalist")
     .attr("id", "row_names_" + root_id)
@@ -329,11 +324,11 @@ export default function build_control_panel(
     .style("font-weight", 400)
     .on("click", () => {
       const inst_value = select(
-        store.getState().visualization.rootElementId +
+        store.select("visualization").rootElementId +
           " .control-container .row_search_box"
       ).node().value;
       const searchedRows = inst_value.split(", ");
-      dispatch(setSearchedRows(searchedRows));
+      dispatch(store.actions.setSearchedRows(searchedRows));
       draw_webgl_layers(regl, store, catArgsManager, camerasManager);
     });
   // opacity slider
@@ -374,7 +369,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      dispatch(setDelimiterForFileType("csv"));
+      dispatch(store.actions.setDelimiterForFileType("csv"));
       download_matrix(store);
     })
     .append("text")
@@ -397,7 +392,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      dispatch(setDelimiterForFileType("tsv"));
+      dispatch(store.actions.setDelimiterForFileType("tsv"));
       download_matrix(store);
     })
     .append("text")
@@ -420,7 +415,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      dispatch(setDelimiterForFileType("tuple"));
+      dispatch(store.actions.setDelimiterForFileType("tuple"));
       download_matrix(store);
     })
     .append("text")
@@ -477,7 +472,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      dispatch(setDelimiterForFileType("col"));
+      dispatch(store.actions.setDelimiterForFileType("col"));
       download_metadata(store);
     })
     .append("text")
@@ -500,7 +495,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      dispatch(setDelimiterForFileType("row"));
+      dispatch(store.actions.setDelimiterForFileType("row"));
       download_metadata(store);
     })
     .append("text")

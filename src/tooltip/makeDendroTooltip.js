@@ -1,7 +1,6 @@
 import { select, selectAll } from "d3-selection";
 import calcCatClusterBreakdown from "../cats/functions/calcCatClusterBreakdown";
 import makeCatBreakdownGraph from "../cats/functions/makeCatBreakdownGraph";
-import { mutateDendrogramState } from "../state/reducers/dendrogramSlice";
 import manual_category_from_dendro from "./manualCategoryFromDendro";
 
 export default (function make_dendro_tooltip(
@@ -13,7 +12,7 @@ export default (function make_dendro_tooltip(
   mouseover,
   inst_axis
 ) {
-  const { dendro, tooltip, cat_data } = store.getState();
+  const { dendro, tooltip, cat_data } = store.selectAll();
   const dispatch = store.dispatch;
 
   tooltip_fun.show("tooltip");
@@ -82,18 +81,19 @@ export default (function make_dendro_tooltip(
     .style("display", "inline-block")
     .style("cursor", "default")
     .on("click", (d) => {
-      const state = store.getState();
-      dispatch(mutateDendrogramState({ output_label_format: d }));
+      const state = store.selectAll();
+      dispatch(store.actions.mutateDendrogramState({ output_label_format: d }));
       selectAll(
-        state.tooltip.tooltip_id + " .selected_label_container .output_format"
+        store.select("tooltip").tooltip_id +
+          " .selected_label_container .output_format"
       ).style("color", (d) => {
         let inst_color = "white";
-        if (d === state.dendro.output_label_format) {
+        if (d === store.select("dendro").output_label_format) {
           inst_color = selected_color;
         }
         return inst_color;
       });
-      select(state.tooltip.tooltip_id + " input").attr(
+      select(store.select("tooltip").tooltip_id + " input").attr(
         "value",
         make_output_string
       );

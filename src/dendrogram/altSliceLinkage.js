@@ -1,5 +1,4 @@
 import { cloneDeep } from "lodash";
-import { setNetworkState } from "../state/reducers/networkSlice";
 
 export default (function alt_slice_linkage(
   store,
@@ -7,7 +6,7 @@ export default (function alt_slice_linkage(
   dist_thresh,
   min_dist = 0
 ) {
-  const { network } = store.getState();
+  const network = store.select("network");
   const dispatch = store.dispatch;
   let clust_a;
   let clust_b;
@@ -62,5 +61,5 @@ export default (function alt_slice_linkage(
     ...node,
     group_links: flat_group_dict[i],
   }));
-  dispatch(setNetworkState(newNetwork));
+  dispatch(store.actions.setNetworkState(newNetwork));
 });

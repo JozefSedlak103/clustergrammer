@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { RootState } from "../store/store";
 
 type TriangleInfo = {
   [x: string]: {
@@ -45,28 +44,22 @@ export interface DendrogramState {
 
 const initialState: DendrogramState = {} as DendrogramState;
 
-export const dendrogramSlice = createSlice({
-  name: "dendro",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setDendrogramState: (state, action: PayloadAction<DendrogramState>) => {
-      state = action.payload;
-      return state;
+export const dendrogramSlice = (id: string) =>
+  createSlice({
+    name: `${id}_dendro`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setDendrogramState: (state, action: PayloadAction<DendrogramState>) => {
+        state = action.payload;
+        return state;
+      },
+      mutateDendrogramState: (
+        state,
+        action: PayloadAction<Partial<DendrogramState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
     },
-    mutateDendrogramState: (
-      state,
-      action: PayloadAction<Partial<DendrogramState>>
-    ) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-  },
-});
-
-export const { setDendrogramState, mutateDendrogramState } =
-  dendrogramSlice.actions;
-
-export const selectDendrogramState = (state: RootState) => state.dendro;
-
-export default dendrogramSlice.reducer;
+  });

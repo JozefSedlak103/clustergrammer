@@ -1,4 +1,3 @@
-import { mutateCategoriesState } from "../../reducers/categoriesSlice";
 import generateCatArray from "./generateCatArray";
 
 export default (function genCatPar(store) {
@@ -14,5 +13,5 @@ export default (function genCatPar(store) {
   cat_room.y = cat_room.webgl;
   cat_data.cat_room = cat_room;
   cat_data.showing_color_picker = false;
-  store.dispatch(mutateCategoriesState(cat_data));
+  store.dispatch(store.actions.mutateCategoriesState(cat_data));
 });

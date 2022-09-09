@@ -1,9 +1,6 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import calcCatClusterBreakdown from "../cats/functions/calcCatClusterBreakdown";
-import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice";
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
-import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
 import getMouseoverType from "./getMouseoverType";
 
 export default function findMouseoverElement(store, ev) {
@@ -33,9 +30,9 @@ export default function findMouseoverElement(store, ev) {
   dim_dict.y = "height";
   const cursor_rel_min = {};
   // https://bobbyhadz.com/blog/javascript-cannot-assign-to-read-only-property-of-object
-  const updatedZoomData = cloneDeep(store.getState().visualization.zoom_data);
+  const updatedZoomData = cloneDeep(store.select("visualization").zoom_data);
   _.each(["x", "y"], function (inst_axis) {
-    const currentVizDim = store.getState().visualization.viz_dim;
+    const currentVizDim = store.select("visualization").viz_dim;
     // try updating mouseover position
     updatedZoomData[inst_axis].cursor_position = ev[inst_axis + "0"];
     // convert offcenter WebGl units to pixel units
@@ -56,11 +53,11 @@ export default function findMouseoverElement(store, ev) {
     updatedZoomData[inst_axis].cursor_rel_min = cursor_rel_min[inst_axis];
   });
   // write zoom data changes
-  dispatch(mutateZoomData(updatedZoomData));
+  dispatch(store.actions.mutateZoomData(updatedZoomData));
   getMouseoverType(store);
   const {
     tooltip: { tooltip_type, in_bounds_tooltip },
-  } = store.getState();
+  } = store.selectAll();
   const axis_indices = {};
   if (in_bounds_tooltip) {
     let axis_index;
@@ -71,7 +68,7 @@ export default function findMouseoverElement(store, ev) {
       inst_dims = ["row"];
     } else if (tooltip_type.indexOf("col") >= 0) {
       inst_dims = ["col"];
-      const newVizData = store.getState().visualization;
+      const newVizData = store.select("visualization;");
       // shift found column label to reflect slanted column labels
       // /////////////////////////////////////////////////////////////
       // the shift is equal to the height above the column labels
@@ -96,7 +93,7 @@ export default function findMouseoverElement(store, ev) {
         visualization: { tile_pix_height, tile_pix_width },
         labels,
         cat_data,
-      } = store.getState();
+      } = store.selectAll();
       if (inst_axis === "row") {
         axis_index = Math.floor(cursor_rel_min.y / tile_pix_height);
         axis_indices[inst_axis] =
@@ -123,11 +120,11 @@ export default function findMouseoverElement(store, ev) {
     });
     if (tooltip_type === "matrix-cell") {
       mouseover.value =
-        store.getState().network.mat?.[axis_indices.row]?.[axis_indices.col] ||
+        store.select("network").mat?.[axis_indices.row]?.[axis_indices.col] ||
         NaN;
     }
   }
-  const { dendro } = store.getState();
+  const dendro = store.select("dendro");
   if (tooltip_type.indexOf("dendro") >= 0) {
     if (tooltip_type === "row-dendro") {
       _.each(dendro.group_info.row, function (i_group) {
@@ -148,13 +145,13 @@ export default function findMouseoverElement(store, ev) {
   // tooltip text for matrix cell only
   setTooltipText(store, mouseover);
 
-  dispatch(setMouseoverInteraction(mouseover));
+  dispatch(store.actions.setMouseoverInteraction(mouseover));
 }
 
 function setTooltipText(store, mouseover) {
   const {
     tooltip: { tooltip_type },
-  } = store.getState();
+  } = store.selectAll();
   let tooltip_text = "";
   if (tooltip_type === "matrix-cell") {
     tooltip_text = `Row: ${mouseover.row.name}\nCol: ${
@@ -186,5 +183,5 @@ function setTooltipText(store, mouseover) {
     const inst_index = tooltip_type.split("-")[2];
     tooltip_text = mouseover[inst_axis].cats[inst_index];
   }
-  store.dispatch(mutateTooltipState({ text: tooltip_text }));
+  store.dispatch(store.actions.mutateTooltipState({ text: tooltip_text }));
 }

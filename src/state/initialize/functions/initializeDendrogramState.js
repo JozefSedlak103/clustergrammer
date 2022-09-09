@@ -1,10 +1,9 @@
 import * as _ from "underscore";
 import alt_slice_linkage from "../../../dendrogram/altSliceLinkage";
 import calc_dendro_triangles from "../../../dendrogram/calcDendroTriangles";
-import { mutateDendrogramState } from "../../reducers/dendrogramSlice";
 
 export default (function initializeDendrogramState(store) {
-  const { network } = store.getState();
+  const network = store.select("network");
 
   const dendro = {};
   dendro.default_level = 5;
@@ -43,5 +42,5 @@ export default (function initializeDendrogramState(store) {
     dendro.group_level[axis] = dendro.default_level;
     dendro.group_info[axis] = calc_dendro_triangles(store, dendro, axis);
   });
-  store.dispatch(mutateDendrogramState(dendro));
+  store.dispatch(store.actions.mutateDendrogramState(dendro));
 });

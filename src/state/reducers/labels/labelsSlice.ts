@@ -60,65 +60,58 @@ const initialState: LabelsState = {
   labelLength: MAX_LABEL_LENGTH,
 };
 
-export const labelsSlice = createSlice({
-  name: "labels",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setLabelsState: (state, action: PayloadAction<LabelsState>) => {
-      state = action.payload;
-      return state;
+export const labelsSlice = (id: string) =>
+  createSlice({
+    name: `${id}_labels`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setLabelsState: (state, action: PayloadAction<LabelsState>) => {
+        state = action.payload;
+        return state;
+      },
+      mutateLabelsState: (
+        state,
+        action: PayloadAction<Partial<LabelsState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
+      setLabelsOffsetDict: (
+        state,
+        action: PayloadAction<LabelsState["offset_dict"]>
+      ) => {
+        state.offset_dict = action.payload;
+        return state;
+      },
+      setLabelsQueue: (
+        state,
+        action: PayloadAction<LabelsState["labels_queue"]>
+      ) => {
+        state.labels_queue = action.payload;
+        return state;
+      },
+      pushHighQueueLabel: (
+        state,
+        action: PayloadAction<{ axis: string; label: string }>
+      ) => {
+        const { axis, label } = action.payload;
+        state?.labels_queue?.high?.[axis].push(label);
+        return state;
+      },
+      dropFromLabelQueue: (
+        state,
+        action: PayloadAction<{
+          queue: "high" | "low";
+          axis: "col" | "row";
+          label: string;
+        }>
+      ) => {
+        const { queue, label, axis } = action.payload;
+        state.labels_queue[queue][axis] = without(
+          state?.labels_queue?.[queue][axis],
+          label
+        );
+      },
     },
-    mutateLabelsState: (state, action: PayloadAction<Partial<LabelsState>>) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-    setLabelsOffsetDict: (
-      state,
-      action: PayloadAction<LabelsState["offset_dict"]>
-    ) => {
-      state.offset_dict = action.payload;
-      return state;
-    },
-    setLabelsQueue: (
-      state,
-      action: PayloadAction<LabelsState["labels_queue"]>
-    ) => {
-      state.labels_queue = action.payload;
-      return state;
-    },
-    pushHighQueueLabel: (
-      state,
-      action: PayloadAction<{ axis: string; label: string }>
-    ) => {
-      const { axis, label } = action.payload;
-      state?.labels_queue?.high?.[axis].push(label);
-      return state;
-    },
-    dropFromLabelQueue: (
-      state,
-      action: PayloadAction<{
-        queue: "high" | "low";
-        axis: "col" | "row";
-        label: string;
-      }>
-    ) => {
-      const { queue, label, axis } = action.payload;
-      state.labels_queue[queue][axis] = without(
-        state?.labels_queue?.[queue][axis],
-        label
-      );
-    },
-  },
-});
-
-export const {
-  setLabelsState,
-  mutateLabelsState,
-  setLabelsOffsetDict,
-  setLabelsQueue,
-  pushHighQueueLabel,
-  dropFromLabelQueue,
-} = labelsSlice.actions;
-
-export default labelsSlice.reducer;
+  });

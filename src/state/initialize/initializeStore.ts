@@ -1,4 +1,3 @@
-import { Store } from "@reduxjs/toolkit";
 import { merge } from "lodash";
 import { Regl } from "regl";
 import * as _ from "underscore";
@@ -6,18 +5,10 @@ import { ClustergrammerProps } from "../../index";
 import calcTextOffsets from "../../matrixLabels/calcTextOffsets";
 import makeLabelQueue from "../../matrixLabels/makeLabelQueue";
 import { NetworkDataNode } from "../../types/network";
-import {
-  LabelsState,
-  setLabelsOffsetDict,
-} from "../reducers/labels/labelsSlice";
-import { NetworkState, setNetworkState } from "../reducers/networkSlice";
-import {
-  NodeCanvasPos,
-  setNodeCanvasPos,
-} from "../reducers/nodeCanvasPosSlice";
-import { setTooltipState } from "../reducers/tooltip/tooltipSlice";
-import { mutateVisualizationState } from "../reducers/visualization/visualizationSlice";
-import { RootState } from "../store/store";
+import { LabelsState } from "../reducers/labels/labelsSlice";
+import { NetworkState } from "../reducers/networkSlice";
+import { NodeCanvasPos } from "../reducers/nodeCanvasPosSlice";
+import { NamespacedStore } from "../store/store";
 import calcAlphaOrder from "./functions/calcAlphaOrder";
 import calcMatArr from "./functions/calcMatArr";
 import calcRowAndColCanvasPositions from "./functions/calcRowAndColCanvasPositions";
@@ -33,11 +24,11 @@ import setCatVizMatrixColors from "./functions/setCatVizMatrixColors";
 export default function initialize_params(
   regl: Regl,
   args: ClustergrammerProps,
-  store: Store<RootState>
+  store: NamespacedStore
 ) {
   const rootElementId = "#" + args.container.id;
   store.dispatch(
-    mutateVisualizationState({
+    store.actions.mutateVisualizationState({
       rootElementId,
     })
   );
@@ -57,7 +48,7 @@ export default function initialize_params(
     norm.zscore_status = "zscored";
   }
   store.dispatch(
-    setNetworkState({
+    store.actions.setNetworkState({
       ...baseNetwork,
       norm,
       // fix initial ordering indexing (will fix in Python on nex release)
@@ -85,12 +76,12 @@ export default function initialize_params(
   generateCatVizInfo(store);
 
   // visualization dimensions setup
-  calcVizDim(regl, store.getState());
+  calcVizDim(regl, store);
 
   // tooltip setup
   store.dispatch(
-    setTooltipState({
-      ...store.getState().tooltip,
+    store.actions.setTooltipState({
+      ...store.select("tooltip,")
       ...(args.enabledTooltips?.length
         ? { enabledTooltips: args.enabledTooltips }
         : {}),
@@ -109,7 +100,7 @@ export default function initialize_params(
     offset_dict[inst_axis] = calcTextOffsets(store, inst_axis);
   });
   store.dispatch(
-    setLabelsOffsetDict(offset_dict as LabelsState["offset_dict"])
+    store.actions.setLabelsOffsetDict(offset_dict as LabelsState["offset_dict"])
   );
 
   // labels setup
@@ -119,7 +110,9 @@ export default function initialize_params(
   generateVisualizationParams(store, rootElementId);
 
   // node canvas pos
-  store.dispatch(setNodeCanvasPos(calcMatArr(store) as NodeCanvasPos));
+  store.dispatch(
+    store.actions.setNodeCanvasPos(calcMatArr(store) as NodeCanvasPos)
+  );
 
   // matrix color parameters
   setCatVizMatrixColors(store);

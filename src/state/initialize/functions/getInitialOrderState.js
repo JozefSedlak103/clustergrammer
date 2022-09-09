@@ -1,8 +1,7 @@
 import * as _ from "underscore";
-import { mutateOrderState } from "../../reducers/order/orderSlice";
 
 export default function getInitialOrderState(store) {
-  const { network } = store.getState();
+  const network = store.select("network");
   const order = {};
   _.each(["inst", "new"], function (inst_state) {
     order[inst_state] = {};
@@ -14,5 +13,5 @@ export default function getInitialOrderState(store) {
       order[inst_state].col = "clust";
     }
   });
-  store.dispatch(mutateOrderState(order));
+  store.dispatch(store.actions.mutateOrderState(order));
 }

@@ -1,20 +1,17 @@
-import { Store } from "@reduxjs/toolkit";
 import { scaleLinear } from "d3-scale";
 import calcVizArea from "../../../params/calcVizArea";
 import iniZoomRestrict from "../../../zoom/iniZoomRestrict";
-import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice";
-import { RootState } from "../../store/store";
 import generateTextTriangleParams from "./generateTextTriangleParams";
 import initializeTextZoom from "./initializeTextZoom";
 
 export default function generateVisualizationParams(
-  store: Store<RootState>,
+  store: NamespacedStore,
   rootElementId: string
 ) {
   const {
     visualization: { viz_dim },
     labels,
-  } = store.getState();
+  } = store.selectAll();
   let min_dim;
   if (labels.num_col < labels.num_row) {
     min_dim = labels.num_col;
@@ -36,7 +33,7 @@ export default function generateVisualizationParams(
   const tile_pix_width = viz_dim.heat.width / labels.num_col;
   const tile_pix_height = viz_dim.heat.height / labels.num_row;
   store.dispatch(
-    mutateVisualizationState({
+    store.actions.mutateVisualizationState({
       zoom_restrict,
       allow_zoom,
       tile_pix_width,

@@ -7,12 +7,10 @@ export default (function cat_breakdown_bars(
   bars_index,
   cat_bar_groups
 ) {
-  const state = store.getState();
-
   const paragraph_string = "<p>";
   const super_string = ": ";
-  const bar_width = state.cat_viz.cat_bar_width;
-  const bar_height = state.cat_viz.cat_bar_height;
+  const bar_width = store.select("cat_viz").cat_bar_width;
+  const bar_height = store.select("cat_viz").cat_bar_height;
   const max_len = 25;
   const max_bar_value = cat_data.bar_data[0][bars_index];
   let i_title = cat_data.type_name;
@@ -53,7 +51,7 @@ export default (function cat_breakdown_bars(
       // cat color is stored in the third element
       return d[3];
     })
-    .attr("opacity", state.cat_viz.cat_colors.opacity)
+    .attr("opacity", store.select("cat_viz").cat_colors.opacity)
     .attr("stroke", "grey")
     .attr("stroke-width", "0.5px");
   // make bar labels

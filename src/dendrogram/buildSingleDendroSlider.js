@@ -5,7 +5,7 @@ import custom_round from "../utils/customRound";
 import changeGroups from "./changeGroups";
 
 export default function build_single_dendro_slider(regl, store, axis) {
-  const { dendro } = store.getState();
+  const dendro = store.select("dendro");
   let dendroSliderValue;
   const slider_length = 100;
   const rect_height = slider_length + 20;
@@ -23,7 +23,7 @@ export default function build_single_dendro_slider(regl, store, axis) {
       changeGroups(regl, store, axis, dendroSliderValue);
     });
   const slider_group = select(
-    store.getState().visualization.rootElementId +
+    store.select("visualization").rootElementId +
       " ." +
       axis +
       "_dendro_slider_svg"
@@ -203,7 +203,7 @@ export default function build_single_dendro_slider(regl, store, axis) {
       });
   }
   function dragging(event) {
-    const draggingState = store.getState();
+    const draggingState = store.selectAll();
     let slider_pos = event.y;
     if (slider_pos < 0) {
       slider_pos = 0;
@@ -223,7 +223,7 @@ export default function build_single_dendro_slider(regl, store, axis) {
     dendroSliderValue = slider_value;
   }
   function click_dendro_slider() {
-    const clickState = store.getState();
+    const clickState = store.selectAll();
     const clicked_line_position = pointer(this);
     const rel_pos = custom_round(clicked_line_position[1], round_level);
     select(
