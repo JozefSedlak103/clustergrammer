@@ -3,8 +3,6 @@ import * as _ from "underscore";
 import build_single_dendro_slider from "../../dendrogram/buildSingleDendroSlider";
 
 export default function build_dendrogram_sliders(regl, store) {
-  const state = store.getState();
-
   // Add sliders on top of the canvas
   // ///////////////////////////////////
   const slider_length = 130;
@@ -13,7 +11,7 @@ export default function build_dendrogram_sliders(regl, store) {
   // hardwiring dendro slider position
   _.each(["row", "col"], function (inst_axis) {
     axis_slider_container = select(
-      state.visualization.rootElementId + " .canvas-container"
+      store.select("visualization").rootElementId + " .canvas-container"
     )
       .append("svg")
       .style("height", slider_length + "px")

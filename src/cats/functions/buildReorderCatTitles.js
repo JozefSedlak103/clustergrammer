@@ -1,7 +1,5 @@
 import { select } from "d3-selection";
 import runReorder from "../../reorders/runReorder";
-import { mutateNetworkState } from "../../state/reducers/networkSlice";
-import { mutateOrderState } from "../../state/reducers/order/orderSlice";
 
 export default (function buildReorderCatTitles(
   regl,
@@ -9,7 +7,6 @@ export default (function buildReorderCatTitles(
   catArgsManager,
   camerasManager
 ) {
-  const state = store.getState();
   const dispatch = store.dispatch;
   const button_color = "#eee";
   const fieldSorter = (fields) => (a, b) =>
@@ -24,15 +21,15 @@ export default (function buildReorderCatTitles(
       })
       .reduce((p, n) => (p ? p : n), 0);
   function stable_reorder_cats(axis, i) {
-    const reorderState = store.getState();
-    const inst_nodes = reorderState.network[axis + "_nodes"].map((x) => x);
+    const reorderNetwork = store.select("network");
+    const inst_nodes = reorderNetwork[axis + "_nodes"].map((x) => x);
     const cat_primary = "cat-" + String(i);
     const cat_secondary_up = "cat-" + String(i - 1);
     const cat_secondary_down = "cat-" + String(i + 1);
     let cat_secondary;
-    if (cat_secondary_down in reorderState.network[axis + "_nodes"][0]) {
+    if (cat_secondary_down in reorderNetwork[axis + "_nodes"][0]) {
       cat_secondary = cat_secondary_down;
-    } else if (cat_secondary_up in reorderState.network[axis + "_nodes"][0]) {
+    } else if (cat_secondary_up in reorderNetwork[axis + "_nodes"][0]) {
       cat_secondary = cat_secondary_up;
     } else {
       // single category reordering
@@ -51,7 +48,7 @@ export default (function buildReorderCatTitles(
       order_dict[inst_name] = i;
     });
     dispatch(
-      mutateNetworkState({
+      store.actions.mutateNetworkState({
         [`${axis}_nodes`]: inst_nodes.map((d) => {
           inst_name = d.name;
           if (inst_name.includes(": ")) {
@@ -65,7 +62,7 @@ export default (function buildReorderCatTitles(
     catArgsManager.regenerateCatArgsArrs(regl, store);
     runReorder(regl, store, catArgsManager, camerasManager, axis, "custom");
     dispatch(
-      mutateOrderState({
+      store.actions.mutateOrderState({
         inst: {
           col: "custom",
         },
@@ -76,7 +73,7 @@ export default (function buildReorderCatTitles(
   let pos_x = 845;
   let pos_y = 125;
   const col_cat_title_group = select(
-    state.visualization.rootElementId + " .canvas-container"
+    store.select("visualization").rootElementId + " .canvas-container"
   )
     .append("g")
     .style("position", "absolute")
@@ -88,7 +85,7 @@ export default (function buildReorderCatTitles(
   const col_cat_title_svg = col_cat_title_group
     .append("svg")
     .style("height", function () {
-      const svg_height = dim_y * state.cat_data.col.length + 5;
+      const svg_height = dim_y * store.select("cat_data").col.length + 5;
       return svg_height + "px";
     })
     .style("width", dim_x + "px")
@@ -98,7 +95,7 @@ export default (function buildReorderCatTitles(
     .classed("col-cat-reorder-group", true);
   col_cat_reorder_group
     .selectAll("rect")
-    .data(state.cat_data.col)
+    .data(store.select("cat_data").col)
     .enter()
     .append("text")
     .text(function (d) {
@@ -113,7 +110,7 @@ export default (function buildReorderCatTitles(
     });
   col_cat_reorder_group
     .selectAll("rect")
-    .data(state.cat_data.col)
+    .data(store.select("cat_data").col)
     .enter()
     .append("rect")
     .style("width", dim_x + "px")
@@ -126,13 +123,15 @@ export default (function buildReorderCatTitles(
     .on("dblclick", function (d, i) {
       stable_reorder_cats("col", i);
       dispatch(
-        mutateOrderState({
+        store.actions.mutateOrderState({
           inst: {
             col: "custom",
           },
         })
       );
-      select(state.visualization.rootElementId + " .col-reorder-buttons")
+      select(
+        store.select("visualization").rootElementId + " .col-reorder-buttons"
+      )
         .selectAll("rect")
         .attr("stroke", button_color);
     })
@@ -144,9 +143,9 @@ export default (function buildReorderCatTitles(
   // Row Titles
   pos_x = 125;
   // var pos_y = 98; // 60 with no cats, 72 with one cat, 85 with two cats
-  pos_y = 62 + 12 * state.cat_data.col.length;
+  pos_y = 62 + 12 * store.select("cat_data").col.length;
   const row_cat_title_group = select(
-    state.visualization.rootElementId + " .canvas-container"
+    store.select("visualization").rootElementId + " .canvas-container"
   )
     .append("g")
     .style("position", "absolute")
@@ -158,7 +157,7 @@ export default (function buildReorderCatTitles(
   const row_cat_title_svg = row_cat_title_group
     .append("svg")
     .style("width", function () {
-      const svg_height = row_dim_y * state.cat_data.row.length + 5;
+      const svg_height = row_dim_y * store.select("cat_data").row.length + 5;
       return svg_height + "px";
     })
     .style("height", row_dim_x + "px")
@@ -173,7 +172,7 @@ export default (function buildReorderCatTitles(
     });
   row_cat_reorder_group
     .selectAll("rect")
-    .data(state.cat_data.row)
+    .data(store.select("cat_data").row)
     .enter()
     .append("text")
     .text(function (d) {
@@ -188,7 +187,7 @@ export default (function buildReorderCatTitles(
     });
   row_cat_reorder_group
     .selectAll("rect")
-    .data(state.cat_data.row)
+    .data(store.select("cat_data").row)
     .enter()
     .append("rect")
     .style("width", row_dim_x + "px")
@@ -201,13 +200,15 @@ export default (function buildReorderCatTitles(
     .on("dblclick", function (d, i) {
       stable_reorder_cats("row", i);
       dispatch(
-        mutateOrderState({
+        store.actions.mutateOrderState({
           inst: {
             row: "custom",
           },
         })
       );
-      select(state.visualization.rootElementId + " .row-reorder-buttons")
+      select(
+        store.select("visualization").rootElementId + " .row-reorder-buttons"
+      )
         .selectAll("rect")
         .attr("stroke", button_color);
     })

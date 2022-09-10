@@ -25,7 +25,7 @@ export default function zoom_rules_high_mat(
       // run_hide_tooltip(store, tooltip_fun);
     })
     .on("interactionend", function () {
-      const interactionState = store.getState();
+      const interactionState = store.selectAll();
       if (
         interactionState.animation.time -
           interactionState.animation.last_click <

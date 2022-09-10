@@ -56,9 +56,7 @@ export default function makeCamera2D(
     zoom_range.aspectRatio === undefined ? 1 : zoom_range.aspectRatio;
   let width = getWidth();
   let height = getHeight();
-  const {
-    visualization: { viz_dim },
-  } = store.getState();
+  const { viz_dim } = store.select("visualization");
   const xcen = 0.5 * (xrange[1] + xrange[0]) + viz_dim.shift_camera.x;
   const ycen = 0.5 * (yrange[1] + yrange[0]) + viz_dim.shift_camera.y;
   const xrng = 0.5 * (xrange[1] - xrange[0]);
@@ -92,7 +90,7 @@ export default function makeCamera2D(
       ev.preventDefault();
     })
     .on("interaction", function (ev) {
-      if (store.getState().interaction.enable_viz_interact) {
+      if (store.select("interaction").enable_viz_interact) {
         camera_interaction(
           store,
           ev,

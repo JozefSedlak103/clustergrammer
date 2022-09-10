@@ -25,41 +25,33 @@ export interface InteractionState {
 const initialState: InteractionState =
   getInitialInteractionState() as unknown as InteractionState;
 
-export const interactionSlice = createSlice({
-  name: "interaction",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setInteractionState: (state, action: PayloadAction<InteractionState>) => {
-      state = action.payload;
-      return state;
+export const interactionSlice = (id: string) =>
+  createSlice({
+    name: `${id}_interaction`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setInteractionState: (state, action: PayloadAction<InteractionState>) => {
+        state = action.payload;
+        return state;
+      },
+      mutateInteractionState: (
+        state,
+        action: PayloadAction<Partial<InteractionState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
+      setMouseoverInteraction: (
+        state,
+        action: PayloadAction<InteractionState["mouseover"]>
+      ) => {
+        state.mouseover = action.payload;
+        return state;
+      },
+      incrementInteractionTotal: (state, action: PayloadAction<number>) => {
+        state.total = state.total + action.payload;
+        return state;
+      },
     },
-    mutateInteractionState: (
-      state,
-      action: PayloadAction<Partial<InteractionState>>
-    ) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-    setMouseoverInteraction: (
-      state,
-      action: PayloadAction<InteractionState["mouseover"]>
-    ) => {
-      state.mouseover = action.payload;
-      return state;
-    },
-    incrementInteractionTotal: (state, action: PayloadAction<number>) => {
-      state.total = state.total + action.payload;
-      return state;
-    },
-  },
-});
-
-export const {
-  setInteractionState,
-  mutateInteractionState,
-  setMouseoverInteraction,
-  incrementInteractionTotal,
-} = interactionSlice.actions;
-
-export default interactionSlice.reducer;
+  });

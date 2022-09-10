@@ -2,9 +2,6 @@
 import { select, selectAll } from "d3-selection";
 import draw_webgl_layers from "../../../draws/drawWebglLayers";
 import recluster from "../../../recluster/recluster";
-import { mutateCatVizState } from "../../../state/reducers/catVizSlice";
-import { mutateMatrixState } from "../../../state/reducers/matrixSlice";
-import { mutateNetworkState } from "../../../state/reducers/networkSlice";
 import { CONTROL_PANEL_CONTAINER_CLASSNAME } from "../../ui.const";
 
 export default (function build_recluster_section(
@@ -13,7 +10,6 @@ export default (function build_recluster_section(
   catArgsManager,
   camerasManager
 ) {
-  const state = store.getState();
   const dispatch = store.dispatch;
 
   const y_offset_buttons = 47;
@@ -29,14 +25,16 @@ export default (function build_recluster_section(
   const active_run_color = "#00FF75";
   const active_button_color = "#008000";
   const control_svg = select(
-    `${state.visualization.rootElementId} .${CONTROL_PANEL_CONTAINER_CLASSNAME} svg`
+    `${
+      store.select("visualization").rootElementId
+    } .${CONTROL_PANEL_CONTAINER_CLASSNAME} svg`
   );
   control_svg
     .append("g")
     .classed("panel_button_titles", true)
     .classed("recluster_button_title", true)
     .on("click", function () {
-      const clickState = store.getState();
+      const clickState = store.selectAll();
       selectAll(
         clickState.visualization.rootElementId + " .panel_button_titles"
       ).attr("opacity", 0.5);
@@ -65,7 +63,7 @@ export default (function build_recluster_section(
           clickState.visualization.rootElementId + " .link_options_container"
         ).style("display", "block");
         dispatch(
-          mutateCatVizState({
+          store.actions.mutateCatVizState({
             current_panel: "recluster",
           })
         );
@@ -90,13 +88,13 @@ export default (function build_recluster_section(
 
   // button that actually runs reclustering
   const run_cluster_container = select(
-    state.visualization.rootElementId + " .control_svg"
+    store.select("visualization").rootElementId + " .control_svg"
   )
     .append("g")
     .classed("run_cluster_container", true)
     .attr("transform", "translate(" + 290 + ", " + 91 + ")")
     .on("click", function () {
-      const clickState = store.getState();
+      const clickState = store.selectAll();
       if (
         clickState.matrix.potential_recluster.distance_metric !==
           clickState.matrix.distance_metric ||
@@ -105,7 +103,7 @@ export default (function build_recluster_section(
       ) {
         // transfer parameters to state when update is pressed
         dispatch(
-          mutateMatrixState({
+          store.actions.mutateMatrixState({
             distance_metric:
               clickState.matrix.potential_recluster.distance_metric,
             linkage_type: clickState.matrix.potential_recluster.linkage_type,
@@ -169,7 +167,9 @@ export default (function build_recluster_section(
   const y_offset_bottom = 91;
   // Distance Options Container
   // //////////////////////////////
-  dist_options = select(state.visualization.rootElementId + " .control_svg")
+  dist_options = select(
+    store.select("visualization").rootElementId + " .control_svg"
+  )
     .append("g")
     .classed("dist_option_container", true)
     .selectAll("g")
@@ -183,14 +183,14 @@ export default (function build_recluster_section(
     })
     .on("click", function (d) {
       dispatch(
-        mutateMatrixState({
+        store.actions.mutateMatrixState({
           potential_recluster: {
             distance_metric: d.full,
           },
         })
       );
       select(
-        store.getState().visualization.rootElementId + " .dist_option_container"
+        store.select("visualization").rootElementId + " .dist_option_container"
       )
         .selectAll("rect")
         .attr("stroke", button_color);
@@ -206,7 +206,7 @@ export default (function build_recluster_section(
     .style("ry", 10)
     .attr("stroke", function (d) {
       let i_color;
-      if (dist_dict[state.matrix.distance_metric] === d.short) {
+      if (dist_dict[store.select("matrix").distance_metric] === d.short) {
         i_color = active_button_color;
       } else {
         i_color = button_color;
@@ -252,7 +252,7 @@ export default (function build_recluster_section(
   link_dict["single"] = "single";
   link_dict["complete"] = "cmplt";
   const link_options_container = select(
-    state.visualization.rootElementId + " .control_svg"
+    store.select("visualization").rootElementId + " .control_svg"
   )
     .append("g")
     .classed("link_option_container", true)
@@ -267,13 +267,15 @@ export default (function build_recluster_section(
     })
     .on("click", function (d) {
       dispatch(
-        mutateMatrixState({
+        store.actions.mutateMatrixState({
           potential_recluster: {
             linkage_type: d.full,
           },
         })
       );
-      select(state.visualization.rootElementId + " .link_option_container")
+      select(
+        store.select("visualization").rootElementId + " .link_option_container"
+      )
         .selectAll("rect")
         .attr("stroke", button_color);
       select(this).select("rect").attr("stroke", active_button_color);
@@ -288,7 +290,7 @@ export default (function build_recluster_section(
     .style("ry", 10)
     .attr("stroke", function (d) {
       let i_color;
-      if (link_dict[state.matrix.linkage_type] === d.short) {
+      if (link_dict[store.select("matrix").linkage_type] === d.short) {
         i_color = active_button_color;
       } else {
         i_color = button_color;
@@ -315,14 +317,14 @@ export default (function build_recluster_section(
     );
   // Normalize Section
   // /////////////////////////////////////////////
-  if (state.network.norm.initial_status === "zscored") {
+  if (store.select("network").norm.initial_status === "zscored") {
     control_svg
       .append("g")
       .classed("panel_button_titles", true)
       .classed("normalize_button_title", true)
       .on("click", function () {
         let norm_zscore_status;
-        if (store.getState().network.norm.zscore_status === "non-zscored") {
+        if (store.select("network").norm.zscore_status === "non-zscored") {
           norm_zscore_status = "zscored";
           select(this).select("text").text("z-scored".toUpperCase());
         } else {
@@ -330,7 +332,7 @@ export default (function build_recluster_section(
           select(this).select("text").text("raw".toUpperCase());
         }
         dispatch(
-          mutateNetworkState({
+          store.actions.mutateNetworkState({
             norm: {
               zscore_status: norm_zscore_status,
             },

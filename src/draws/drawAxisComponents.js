@@ -16,8 +16,6 @@ export default (function drawAxisComponents(
   inst_axis,
   calc_text_tri = false
 ) {
-  const state = store.getState();
-
   let axis_dim;
   if (inst_axis === "col") {
     axis_dim = "x";
@@ -36,13 +34,13 @@ export default (function drawAxisComponents(
     _.each(cat_args[inst_axis], function (inst_cat_arg) {
       regl(inst_cat_arg)({
         interp_prop: interpFun(store),
-        run_animation: state.animation.running,
+        run_animation: store.select("animation").running,
       });
     });
     // only show the dendrogram if the current axis is in clust ordering
     if (
-      state.order.inst[inst_axis] === "clust" &&
-      state.order.new[inst_axis] === "clust"
+      store.select("order").inst[inst_axis] === "clust" &&
+      store.select("order").new[inst_axis] === "clust"
     ) {
       const dendroArgs = makeDendroArgs(regl, store, inst_axis);
       regl(dendroArgs)();
@@ -56,32 +54,37 @@ export default (function drawAxisComponents(
     }
     if (calc_text_tri) {
       const num_viz_labels =
-        state.labels["num_" + inst_axis] /
-        state.visualization.zoom_data[axis_dim].total_zoom;
+        store.select("labels")["num_" + inst_axis] /
+        store.select("visualization").zoom_data[axis_dim].total_zoom;
       if (
-        num_viz_labels < state.visualization.max_num_text &&
-        state.labels.labels_queue.high[inst_axis].length === 0
+        num_viz_labels < store.select("visualization").max_num_text &&
+        store.select("labels").labels_queue.high[inst_axis].length === 0
       ) {
         const viz_area = calcVizArea(store);
 
         // only regather if there are more labels than can be shown at once
         if (
-          state.labels["num_" + inst_axis] >= state.visualization.max_num_text
+          store.select("labels")["num_" + inst_axis] >=
+          store.select("visualization").max_num_text
         ) {
           gatherTextTriangles(store, viz_area, inst_axis);
         }
         // we have to check for existence of text vectors to draw now, as they
         // might be created async and we might not have all of them
-        if (state.visualization.text_triangles.draw[inst_axis] !== false) {
+        if (
+          store.select("visualization").text_triangles.draw[inst_axis] !== false
+        ) {
           regl(text_triangle_args)(
-            store.getState().visualization.text_triangles.draw[inst_axis]
+            store.select("visualization").text_triangles.draw[inst_axis]
           );
         }
       }
     } else {
-      if (state.visualization.text_triangles.draw[inst_axis] !== false) {
+      if (
+        store.select("visualization").text_triangles.draw[inst_axis] !== false
+      ) {
         regl(text_triangle_args)(
-          store.getState().visualization.text_triangles.draw[inst_axis]
+          store.select("visualization").text_triangles.draw[inst_axis]
         );
       } else {
         console.error(`didn't draw ${inst_axis} axis labels!`);

@@ -3,7 +3,7 @@ import * as _ from "underscore";
 import calc_inverse_zscore from "../utils/calcInverseZscore";
 
 export default (function make_opacity_arr(store) {
-  const { network, matrix } = store.getState();
+  const { network, matrix } = store.selectAll();
   let viz_mat_data = network.mat;
 
   // if initially Z-scored

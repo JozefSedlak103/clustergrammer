@@ -26,25 +26,22 @@ export interface TooltipState {
 
 const initialState: TooltipState = getInitialTooltipState();
 
-export const tooltipSlice = createSlice({
-  name: "tooltip",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setTooltipState: (state, action: PayloadAction<TooltipState>) => {
-      state = action.payload;
-      return state;
+export const tooltipSlice = (id: string) =>
+  createSlice({
+    name: `${id}_tooltip`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setTooltipState: (state, action: PayloadAction<TooltipState>) => {
+        state = action.payload;
+        return state;
+      },
+      mutateTooltipState: (
+        state,
+        action: PayloadAction<Partial<TooltipState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
     },
-    mutateTooltipState: (
-      state,
-      action: PayloadAction<Partial<TooltipState>>
-    ) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-  },
-});
-
-export const { setTooltipState, mutateTooltipState } = tooltipSlice.actions;
-
-export default tooltipSlice.reducer;
+  });

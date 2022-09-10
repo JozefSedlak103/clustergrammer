@@ -1,4 +1,3 @@
-import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
 import { Regl } from "regl";
 import * as _ from "underscore";
@@ -7,33 +6,22 @@ import { CatArgsManager } from "../../../cats/manager/catArgsManager";
 import calcTextOffsets from "../../../matrixLabels/calcTextOffsets";
 import genOrderedLabels from "../../../matrixLabels/genOrderedLabels";
 import updateTextTriangleOrder from "../../../matrixLabels/updateTextTriangleOrder";
-import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice";
-import {
-  LabelsState,
-  mutateLabelsState,
-} from "../../../state/reducers/labels/labelsSlice";
-import {
-  mutateOrderState,
-  OrderState,
-} from "../../../state/reducers/order/orderSlice";
-import {
-  mutateVisualizationState,
-  VisualizationState,
-} from "../../../state/reducers/visualization/visualizationSlice";
-import { RootState } from "../../../state/store/store";
+import { LabelsState } from "../../../state/reducers/labels/labelsSlice";
+import { OrderState } from "../../../state/reducers/order/orderSlice";
+import { VisualizationState } from "../../../state/reducers/visualization/visualizationSlice";
+import { NamespacedStore } from "../../../state/store/store";
 import { Axis } from "../../../types/general";
 
 export default (function end_animation(
   regl: Regl,
-  store: Store<RootState>,
+  store: NamespacedStore,
   catArgsManager: CatArgsManager,
   camerasManager: CamerasManager
 ) {
-  const state = store.getState();
   const dispatch = store.dispatch;
 
   dispatch(
-    mutateAnimationState({
+    store.actions.mutateAnimationState({
       running: false,
       run_animation: false,
     })
@@ -42,7 +30,7 @@ export default (function end_animation(
   camerasManager.mutateReglProps({
     attributes: {
       pos_att_ini: {
-        buffer: regl.buffer(state.arrs.position_arr.new),
+        buffer: regl.buffer(store.select("arrs").position_arr.new),
         divisor: 1,
       },
     },
@@ -51,20 +39,20 @@ export default (function end_animation(
   _.each(["row", "col"], function (i_axis) {
     for (
       let cat_index = 0;
-      cat_index < state.cat_data.cat_num[i_axis];
+      cat_index < store.select("cat_data").cat_num[i_axis];
       cat_index++
     ) {
       // update the attribute
       catArgsManager.updateCatArgsAttribute(i_axis as Axis, cat_index);
     }
     // transfer new order to old order
-    const orderInstance = state.order.new[i_axis];
+    const orderInstance = store.select("order").new[i_axis];
     // turn dendrogram slider back on if necessary
     if (orderInstance === "clust") {
       select("." + i_axis + "_dendro_slider_svg").style("display", "block");
     }
     dispatch(
-      mutateOrderState({
+      store.actions.mutateOrderState({
         inst: {
           [i_axis]: orderInstance,
         },
@@ -80,7 +68,7 @@ export default (function end_animation(
     offset_dict[i_axis] = calcTextOffsets(store, i_axis);
   });
   dispatch(
-    mutateVisualizationState({
+    store.actions.mutateVisualizationState({
       text_triangles: {
         draw: text_triangles_draw,
       } as VisualizationState["text_triangles"],
@@ -89,7 +77,7 @@ export default (function end_animation(
   // update ordered_labels
   genOrderedLabels(store);
   dispatch(
-    mutateLabelsState({
+    store.actions.mutateLabelsState({
       offset_dict,
     })
   );

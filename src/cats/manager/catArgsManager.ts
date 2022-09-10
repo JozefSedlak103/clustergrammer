@@ -1,7 +1,6 @@
-import { Store } from "@reduxjs/toolkit";
 import { set } from "lodash";
 import { DrawConfig, Regl } from "regl";
-import { RootState } from "../../state/store/store";
+import { NamespacedStore } from "../../state/store/store";
 import generate_cat_args_arrs from "./generateCatArgsArrs";
 import makeCatPositionArray from "./makeCatPositionArray";
 
@@ -30,7 +29,7 @@ export class CatArgsManager {
   #catArgs: CatArgs;
   #catArrs: CatArrs;
 
-  constructor(regl: Regl, store: Store<RootState>) {
+  constructor(regl: Regl, store: NamespacedStore) {
     this.#regl = regl;
     const { cat_args, cat_arrs } = this.generateCatArgsArrs(store);
     this.#catArgs = cat_args as CatArgs;
@@ -45,22 +44,18 @@ export class CatArgsManager {
     return this.#catArrs;
   }
 
-  generateCatArgsArrs(store: Store<RootState>) {
+  generateCatArgsArrs(store: NamespacedStore) {
     const { cat_args, cat_arrs } = generate_cat_args_arrs(this.#regl, store);
     return { cat_args, cat_arrs };
   }
 
-  regenerateCatArgsArrs(store: Store<RootState>) {
+  regenerateCatArgsArrs(store: NamespacedStore) {
     const { cat_args, cat_arrs } = this.generateCatArgsArrs(store);
     this.#catArgs = cat_args as CatArgs;
     this.#catArrs = cat_arrs as CatArrs;
   }
 
-  makeNewCatArrs(
-    store: Store<RootState>,
-    inst_axis: string,
-    cat_index: number
-  ) {
+  makeNewCatArrs(store: NamespacedStore, inst_axis: string, cat_index: number) {
     const newArray = makeCatPositionArray(store, inst_axis);
     set(this.#catArrs, ["new", inst_axis, cat_index], newArray);
   }

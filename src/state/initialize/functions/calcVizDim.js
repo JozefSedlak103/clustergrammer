@@ -1,10 +1,9 @@
 import { select } from "d3-selection";
 import * as _ from "underscore";
-import { setVisualizationDimensions } from "../../reducers/visualization/visualizationSlice";
-import { store } from "../../store/store";
 
-export default (function calcVizDim(regl, state) {
-  const { labels, cat_data } = state;
+export default (function calcVizDim(regl, store) {
+  const labels = store.select("labels");
+  const cat_data = store.select("cat_data");
   const viz_dim = {};
   const options = {
     element: regl._gl.canvas,
@@ -84,5 +83,5 @@ export default (function calcVizDim(regl, state) {
     }
   });
 
-  store.dispatch(setVisualizationDimensions(viz_dim));
+  store.dispatch(store.actions.setVisualizationDimensions(viz_dim));
 });

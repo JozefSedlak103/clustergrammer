@@ -1,12 +1,9 @@
-import { Store } from "@reduxjs/toolkit";
 import { selectAll } from "d3-selection";
 import { Regl } from "regl";
 import { CamerasManager } from "../../../cameras/camerasManager";
 import { CatArgsManager } from "../../../cats/manager/catArgsManager";
 import drawInteracting from "../../../draws/drawInteracting";
-import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice";
-import { mutateInteractionState } from "../../../state/reducers/interaction/interactionSlice";
-import { RootState } from "../../../state/store/store";
+import { NamespacedStore } from "../../../state/store/store";
 import draw_background_calculations from "../drawBackgroundCalculations";
 import drawLabelsTooltipsOrDendro from "../drawLabelsTooltipsOrDendro";
 import end_animation from "./endAnimation";
@@ -14,24 +11,24 @@ import start_animation from "./startAnimation";
 
 export default function run_viz(
   regl: Regl,
-  store: Store<RootState>,
+  store: NamespacedStore,
   catArgsManager: CatArgsManager,
   camerasManager: CamerasManager
 ) {
   const dispatch = store.dispatch;
   dispatch(
-    mutateAnimationState({
+    store.actions.mutateAnimationState({
       first_frame: true,
     })
   );
   // function to run on every frame
   regl.frame(function ({ time }) {
     dispatch(
-      mutateAnimationState({
+      store.actions.mutateAnimationState({
         time,
       })
     );
-    const firstState = store.getState();
+    const firstState = store.selectAll();
     if (firstState.interaction.total > 1) {
       selectAll(
         firstState.visualization.rootElementId + " .group-svg-tooltip"
@@ -40,14 +37,14 @@ export default function run_viz(
 
     // prevent this from being negative, can happen when resetting zoom
     if (firstState.interaction.total < 0) {
-      dispatch(mutateInteractionState({ total: 0 }));
+      dispatch(store.actions.mutateInteractionState({ total: 0 }));
     }
     if (firstState.visualization.reset_cameras) {
       // reset cameras mutates zoom data
       camerasManager.resetCameras(store);
     }
 
-    const thirdState = store.getState();
+    const thirdState = store.selectAll();
     if (thirdState.animation.run_animation) {
       // modifies animation duration end
       start_animation(store);
@@ -59,19 +56,19 @@ export default function run_viz(
     }
 
     if (
-      store.getState().interaction.still_interacting ||
-      store.getState().animation.ini_viz ||
-      store.getState().animation.running ||
-      store.getState().animation.update_viz
+      store.select("interaction").still_interacting ||
+      store.select("animation").ini_viz ||
+      store.select("animation").running ||
+      store.select("animation").update_viz
     ) {
       drawInteracting(regl, store, catArgsManager, camerasManager);
-      dispatch(mutateAnimationState({ update_viz: false }));
-    } else if (store.getState().tooltip.show_tooltip) {
+      dispatch(store.actions.mutateAnimationState({ update_viz: false }));
+    } else if (store.select("tooltip").show_tooltip) {
       // mouseover may result in draw command
       draw_background_calculations(store);
     } else if (
-      store.getState().labels.draw_labels ||
-      store.getState().dendro.update_dendro
+      store.select("labels").draw_labels ||
+      store.select("dendro").update_dendro
     ) {
       drawLabelsTooltipsOrDendro(regl, store, catArgsManager, camerasManager);
     } else {

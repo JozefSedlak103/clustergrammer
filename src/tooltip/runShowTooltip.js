@@ -9,8 +9,7 @@ export default (function runShowTooltip(
   camerasManager,
   tooltip_fun
 ) {
-  const state = store.getState();
-  if (state.tooltip.permanent_tooltip === false) {
+  if (store.select("tooltip").permanent_tooltip === false) {
     remove_lost_tooltips();
     makeTooltipText(
       regl,
@@ -18,8 +17,8 @@ export default (function runShowTooltip(
       catArgsManager,
       camerasManager,
       tooltip_fun,
-      state.interaction.mouseover
+      store.select("interaction").mouseover
     );
-    display_and_position_tooltip(state);
+    display_and_position_tooltip(store);
   }
 });

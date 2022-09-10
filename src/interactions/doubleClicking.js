@@ -6,10 +6,9 @@ export default (function doubleClicking(
   catArgsManager,
   camerasManager
 ) {
-  const state = store.getState();
-  if (state.tooltip.tooltip_type === "col-label") {
+  if (store.select("tooltip").tooltip_type === "col-label") {
     custom_label_reorder(regl, store, catArgsManager, camerasManager, "col");
-  } else if (state.tooltip.tooltip_type === "row-label") {
+  } else if (store.select("tooltip").tooltip_type === "row-label") {
     custom_label_reorder(regl, store, catArgsManager, camerasManager, "row");
   }
 });

@@ -1,12 +1,11 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { mutateNetworkState } from "../state/reducers/networkSlice";
 
 export default (function calcTextOffsets(store, inst_axis) {
-  const state = store.getState();
-
   const offset_dict = {};
-  const newNetworkNodes = cloneDeep(state.network[inst_axis + "_nodes"]);
+  const newNetworkNodes = cloneDeep(
+    store.select("network")[inst_axis + "_nodes"]
+  );
   _.each(newNetworkNodes, function (inst_label, inst_id) {
     const offsets = {};
     let order_id;
@@ -17,10 +16,12 @@ export default (function calcTextOffsets(store, inst_axis) {
     } else {
       inst_dim = "y";
     }
-    const axis_arr = state.rowAndColCanvasPositions[inst_dim + "_arr"];
-    const inst_order = state.order.inst[inst_axis];
-    const new_order = state.order.new[inst_axis];
-    const num_labels = state.labels["num_" + inst_axis];
+    const axis_arr = store.select("rowAndColCanvasPositions")[
+      inst_dim + "_arr"
+    ];
+    const inst_order = store.select("order").inst[inst_axis];
+    const new_order = store.select("order").new[inst_axis];
+    const num_labels = store.select("labels")["num_" + inst_axis];
     // calculate inst and new offsets
     _.each(["inst", "new"], function (inst_state) {
       if (inst_state === "inst") {
@@ -46,7 +47,7 @@ export default (function calcTextOffsets(store, inst_axis) {
     offset_dict[inst_name] = offsets;
   });
   store.dispatch(
-    mutateNetworkState({
+    store.actions.mutateNetworkState({
       [inst_axis + "_nodes"]: newNetworkNodes,
     })
   );

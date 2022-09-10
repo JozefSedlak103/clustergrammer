@@ -19,26 +19,22 @@ export interface AnimationState {
 
 const initialState: AnimationState = genIntPar();
 
-export const animationSlice = createSlice({
-  name: "animation",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setAnimationState: (state, action: PayloadAction<AnimationState>) => {
-      state = action.payload;
-      return state;
+export const animationSlice = (id: string) =>
+  createSlice({
+    name: `${id}_animation`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setAnimationState: (state, action: PayloadAction<AnimationState>) => {
+        state = action.payload;
+        return state;
+      },
+      mutateAnimationState: (
+        state,
+        action: PayloadAction<Partial<AnimationState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
     },
-    mutateAnimationState: (
-      state,
-      action: PayloadAction<Partial<AnimationState>>
-    ) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-  },
-});
-
-export const { setAnimationState, mutateAnimationState } =
-  animationSlice.actions;
-
-export default animationSlice.reducer;
+  });

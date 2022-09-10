@@ -43,25 +43,22 @@ const initialState: NetworkState = {
   cat_colors: [],
 };
 
-export const networkSlice = createSlice({
-  name: "network",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setNetworkState: (state, action: PayloadAction<NetworkState>) => {
-      state = action.payload;
-      return state;
+export const networkSlice = (id: string) =>
+  createSlice({
+    name: `${id}_network`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setNetworkState: (state, action: PayloadAction<NetworkState>) => {
+        state = action.payload;
+        return state;
+      },
+      mutateNetworkState: (
+        state,
+        action: PayloadAction<Partial<NetworkState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
     },
-    mutateNetworkState: (
-      state,
-      action: PayloadAction<Partial<NetworkState>>
-    ) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-  },
-});
-
-export const { setNetworkState, mutateNetworkState } = networkSlice.actions;
-
-export default networkSlice.reducer;
+  });

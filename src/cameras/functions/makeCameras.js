@@ -3,9 +3,7 @@ import makeCamera2D from "./customCamera2D";
 export default function make_cameras(regl, store) {
   const cameras = {};
   const ini_scale = 1.0;
-  const {
-    visualization: { viz_dim },
-  } = store.getState();
+  const { viz_dim } = store.select("visualization");
   const zoom_range = {
     xrange: [-ini_scale, ini_scale],
     yrange: [-ini_scale, ini_scale],

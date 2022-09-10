@@ -2,22 +2,24 @@ import interpFun from "../draws/interpFun";
 import { rotation, scaling } from "../draws/mat3Transform";
 
 export default function make_col_text_args(regl, store, zoom_function) {
-  const state = store.getState();
-
   const inst_axis = "col";
-  const num_col = state.labels["num_" + inst_axis];
-  const col_width = state.visualization.viz_dim.heat_size.x / num_col;
+  const num_col = store.select("labels")["num_" + inst_axis];
+  const col_width = store.select("visualization").viz_dim.heat_size.x / num_col;
 
   let scale_text = num_col;
-  const webgl_fs = (1 / num_col) * state.visualization.zoom_data.x.total_zoom;
-  const max_webgl_fs = state.visualization.text_zoom.col.max_webgl_fs;
+  const webgl_fs =
+    (1 / num_col) * store.select("visualization").zoom_data.x.total_zoom;
+  const max_webgl_fs = store.select("visualization").text_zoom.col.max_webgl_fs;
   let scale_down_fs;
   if (webgl_fs > max_webgl_fs) {
     scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
   const mat_rotate = rotation(Math.PI / 4);
-  const text_y_scale = scaling(1, state.visualization.zoom_data.x.total_zoom);
+  const text_y_scale = scaling(
+    1,
+    store.select("visualization").zoom_data.x.total_zoom
+  );
   // need to shift col labels up to counteract the rotation by 45%
   const rh_tri_hyp = col_width;
   const rh_tri_side = rh_tri_hyp / Math.sqrt(2);
@@ -107,21 +109,21 @@ export default function make_col_text_args(regl, store, zoom_function) {
       inst_offset: regl.prop("inst_offset"),
       new_offset: regl.prop("new_offset"),
       scale_text: scale_text,
-      y_offset: state.visualization.viz_dim.mat_size.y,
-      heat_size: state.visualization.viz_dim.heat_size.x,
+      y_offset: store.select("visualization").viz_dim.mat_size.y,
+      heat_size: store.select("visualization").viz_dim.heat_size.x,
       shift_heat:
-        state.visualization.viz_dim.mat_size.x -
-        state.visualization.viz_dim.heat_size.x,
+        store.select("visualization").viz_dim.mat_size.x -
+        store.select("visualization").viz_dim.heat_size.x,
       shift_text_right: shift_text_right,
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
-      total_zoom: state.visualization.zoom_data.x.total_zoom,
+      total_zoom: store.select("visualization").zoom_data.x.total_zoom,
       col_width: col_width,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interpFun(store))),
-      run_animation: state.animation.running,
+      run_animation: store.select("animation").running,
     },
     depth: {
       enable: true,
