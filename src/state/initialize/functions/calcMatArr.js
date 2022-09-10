@@ -1,7 +1,7 @@
 import * as _ from "underscore";
 
 export default (function calcMatArr(store) {
-  const { labels, visualization } = store.getState();
+  const { labels, visualization } = store.selectAll();
   const num_row = labels.num_row;
   const num_col = labels.num_col;
   // draw matrix cells

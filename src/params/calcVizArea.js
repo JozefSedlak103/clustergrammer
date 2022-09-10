@@ -2,7 +2,7 @@ import * as _ from "underscore";
 import genPixToWebgl from "./genPixToWebgl";
 
 export default (function calcVizArea(store) {
-  const { visualization } = store.getState();
+  const visualization = store.select("visualization");
   const pix_to_webgl = genPixToWebgl(visualization.viz_dim);
   const zoom_data = visualization.zoom_data;
   const buffer_width = 0.0;

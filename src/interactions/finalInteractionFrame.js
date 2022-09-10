@@ -1,31 +1,29 @@
-import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
-
 export default (function final_interaction_frame(store) {
-  const state = store.getState();
   const dispatch = store.dispatch;
   // reduce the number of interactions
-  if (state.interaction.total === 0 && state.animation.ini_viz === false) {
+  if (
+    store.select("interaction").total === 0 &&
+    store.select("animation").ini_viz === false
+  ) {
     // preventing from running on first frame
-    if (state.animation.first_frame === false) {
+    if (store.select("animation").first_frame === false) {
       // run draw commands
       dispatch(
-        mutateLabelsState({
+        store.actions.mutateLabelsState({
           draw_labels: true,
         })
       );
     } else {
       dispatch(
-        mutateAnimationState({
+        store.actions.mutateAnimationState({
           first_frame: false,
         })
       );
     }
   }
   dispatch(
-    mutateInteractionState({
-      total: state.interaction.total - 1,
+    store.actions.mutateInteractionState({
+      total: store.select("interaction").total - 1,
     })
   );
 });

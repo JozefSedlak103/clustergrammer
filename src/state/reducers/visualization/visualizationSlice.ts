@@ -137,60 +137,50 @@ const initialState: VisualizationState = (() => {
   };
 })();
 
-export const visualizationSlice = createSlice({
-  name: "visualization",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setVisualizationState: (
-      state,
-      action: PayloadAction<VisualizationState>
-    ) => {
-      state = action.payload;
-      return state;
+export const visualizationSlice = (id: string) =>
+  createSlice({
+    name: `${id}_visualization`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setVisualizationState: (
+        state,
+        action: PayloadAction<VisualizationState>
+      ) => {
+        state = action.payload;
+        return state;
+      },
+      mutateVisualizationState: (
+        state,
+        action: PayloadAction<Partial<VisualizationState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
+      mutateZoomData: (
+        state,
+        action: PayloadAction<Partial<VisualizationState["zoom_data"]>>
+      ) => {
+        state.zoom_data = merge(state.zoom_data, action.payload);
+        return state;
+      },
+      setZoomData: (
+        state,
+        action: PayloadAction<VisualizationState["zoom_data"]>
+      ) => {
+        state.zoom_data = action.payload;
+        return state;
+      },
+      setVisualizationDimensions: (
+        state,
+        action: PayloadAction<VisualizationState["viz_dim"]>
+      ) => {
+        state.viz_dim = action.payload;
+        return state;
+      },
+      setTotalMouseover: (state, action: PayloadAction<number>) => {
+        state.total_mouseover = action.payload;
+        return state;
+      },
     },
-    mutateVisualizationState: (
-      state,
-      action: PayloadAction<Partial<VisualizationState>>
-    ) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-    mutateZoomData: (
-      state,
-      action: PayloadAction<Partial<VisualizationState["zoom_data"]>>
-    ) => {
-      state.zoom_data = merge(state.zoom_data, action.payload);
-      return state;
-    },
-    setZoomData: (
-      state,
-      action: PayloadAction<VisualizationState["zoom_data"]>
-    ) => {
-      state.zoom_data = action.payload;
-      return state;
-    },
-    setVisualizationDimensions: (
-      state,
-      action: PayloadAction<VisualizationState["viz_dim"]>
-    ) => {
-      state.viz_dim = action.payload;
-      return state;
-    },
-    setTotalMouseover: (state, action: PayloadAction<number>) => {
-      state.total_mouseover = action.payload;
-      return state;
-    },
-  },
-});
-
-export const {
-  setVisualizationState,
-  mutateVisualizationState,
-  mutateZoomData,
-  setZoomData,
-  setVisualizationDimensions,
-  setTotalMouseover,
-} = visualizationSlice.actions;
-
-export default visualizationSlice.reducer;
+  });

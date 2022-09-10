@@ -1,8 +1,5 @@
 import { computePosition, flip, offset, shift } from "@floating-ui/dom";
-import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
-import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice";
-import { RootState } from "../../../state/store/store";
 import { CANVAS_CONTAINER_CLASSNAME } from "../../ui.const";
 
 export const TOOLTIP_ID = "cg-tooltip";
@@ -54,7 +51,7 @@ const showTooltip = ({
 };
 
 export default function ini_canvas_mouseover(
-  store: Store<RootState>,
+  store: NamespacedStore,
   container: any
 ) {
   select(container)
@@ -78,24 +75,26 @@ export default function ini_canvas_mouseover(
   const canvas = document.getElementsByTagName("canvas")?.[0];
 
   canvas.addEventListener("mousemove", (e) => {
-    const state = store.getState();
+    const state = store.selectAll();
 
     // show a tooltip if we're on a matrix cell
     const tooltip = document.getElementById(TOOLTIP_ID);
     if (
       tooltip &&
-      state.tooltip.show_tooltip &&
-      !state.tooltip.disable_tooltip
+      store.select("tooltip").show_tooltip &&
+      !store.select("tooltip").disable_tooltip
     ) {
       if (
-        state.tooltip.tooltip_type &&
-        state.tooltip.tooltip_type !== "out-of-bounds" &&
-        state.tooltip.enabledTooltips.some((x) =>
-          state.tooltip.tooltip_type?.includes(x)
-        )
+        store.select("tooltip").tooltip_type &&
+        store.select("tooltip").tooltip_type !== "out-of-bounds" &&
+        store
+          .select("tooltip")
+          .enabledTooltips.some((x) =>
+            store.select("tooltip").tooltip_type?.includes(x)
+          )
       ) {
-        if (tooltip.textContent != state.tooltip.text) {
-          tooltip.textContent = state.tooltip.text;
+        if (tooltip.textContent != store.select("tooltip").text) {
+          tooltip.textContent = store.select("tooltip").text;
         }
         showTooltip(e);
       } else {
@@ -104,11 +103,11 @@ export default function ini_canvas_mouseover(
     }
   });
   canvas.addEventListener("mouseleave", () => {
-    store.dispatch(mutateTooltipState({ show_tooltip: false }));
+    store.dispatch(store.actions.mutateTooltipState({ show_tooltip: false }));
     hideTooltip();
   });
   canvas.addEventListener("mouseenter", () => {
-    store.dispatch(mutateTooltipState({ show_tooltip: true }));
+    store.dispatch(store.actions.mutateTooltipState({ show_tooltip: true }));
     hideTooltip();
   });
 }

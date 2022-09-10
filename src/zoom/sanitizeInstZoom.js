@@ -1,5 +1,4 @@
 import { cloneDeep } from "lodash";
-import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
 
 export default (function sanitize_inst_zoom(store, zoom_data) {
   // first sanitize zooming out if already completely zoomed out
@@ -8,7 +7,7 @@ export default (function sanitize_inst_zoom(store, zoom_data) {
     sanitizedZoomData.inst_zoom = 1;
     // reset zoom
     store.dispatch(
-      mutateVisualizationState({
+      store.actions.mutateVisualizationState({
         reset_cameras: true,
       })
     );

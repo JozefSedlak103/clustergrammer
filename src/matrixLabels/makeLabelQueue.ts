@@ -1,11 +1,8 @@
-import { Store } from "@reduxjs/toolkit";
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
-import { RootState } from "../state/store/store";
 
-export default (function make_label_queue(store: Store<RootState>) {
-  const { labels } = store.getState();
+export default (function make_label_queue(store: NamespacedStore) {
+  const labels = store.select("labels");
 
   const labelsQueue = cloneDeep(labels.labels_queue) || {};
   if (!("high" in labelsQueue)) {
@@ -34,7 +31,7 @@ export default (function make_label_queue(store: Store<RootState>) {
   });
 
   store.dispatch(
-    mutateLabelsState({
+    store.actions.mutateLabelsState({
       labels_queue: labelsQueue,
     })
   );

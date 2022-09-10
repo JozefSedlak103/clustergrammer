@@ -21,9 +21,7 @@ export default function camera_interaction(
     /*
         Sanitize zoom data components
         */
-    const {
-      visualization: { zoom_data },
-    } = store.getState();
+    const { zoom_data } = store.select("visualization");
     let inst_x_zoom = zoom_data.x.inst_zoom;
     let inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
     let inst_x_pan_by_drag = zoom_data.x.pan_by_drag;

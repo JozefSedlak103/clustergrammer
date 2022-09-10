@@ -1,4 +1,3 @@
-import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
 import { noop } from "lodash";
 import { Regl } from "regl";
@@ -9,13 +8,9 @@ import recluster from "./recluster/recluster";
 import runReorder from "./reorders/runReorder";
 import initializeRegl from "./state/initialize/functions/initializeRegl";
 import initializeStore from "./state/initialize/initializeStore";
-import {
-  mutateMatrixState,
-  setOpacityScale,
-} from "./state/reducers/matrixSlice";
 import { NetworkState } from "./state/reducers/networkSlice";
 import { TooltipState } from "./state/reducers/tooltip/tooltipSlice";
-import { RootState, store } from "./state/store/store";
+import { createStore, NamespacedStore } from "./state/store/store";
 import { createCanvasContainer } from "./ui/functions/createCanvasContainer";
 import { UI } from "./ui/ui";
 import { CANVAS_CONTAINER_CLASSNAME } from "./ui/ui.const";
@@ -50,12 +45,12 @@ export type ClustergrammerProps = {
 const adjustOpacity =
   (
     regl: Regl,
-    store: Store<RootState>,
+    store: NamespacedStore,
     catArgsManager: CatArgsManager,
     camerasManager: CamerasManager
   ) =>
   (opacity: number) => {
-    store.dispatch(setOpacityScale(opacity));
+    store.dispatch(store.actions.setOpacityScale(opacity));
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
   };
 
@@ -84,6 +79,9 @@ function clustergrammer_gl(
     // all renders and the store initialization depends on it
     const regl = initializeRegl(canvas_container);
 
+    // create store instance (to be passed to all functions)
+    const store = createStore();
+
     // initialize store defaults now that we have a REGL instance
     // NOTE: do this before any components, as the components access
     // the state
@@ -110,7 +108,6 @@ function clustergrammer_gl(
     zoom_rules_high_mat(regl, store, catArgsManager, camerasManager, onClick);
 
     // get snapshot of state to return
-    const state = store.getState();
     return {
       cameras: camerasManager,
       ui, // should we actually return this? (should it even be a class or just a function?)
@@ -122,7 +119,7 @@ function clustergrammer_gl(
       ),
       params: {
         network: {
-          row_node_names: state.network.row_node_names,
+          row_node_names: store.select("network.row_node_names"),
         },
       },
       utils: {
@@ -130,13 +127,13 @@ function clustergrammer_gl(
       },
       functions: {
         recluster: (distance_metric: string, linkage_type: string) => {
-          const reclusterState = store.getState();
+          const matrixState = store.select("matrix");
           if (
-            distance_metric !== reclusterState.matrix.distance_metric ||
-            linkage_type !== reclusterState.matrix.linkage_type
+            distance_metric !== matrixState.distance_metric ||
+            linkage_type !== matrixState.linkage_type
           ) {
             store.dispatch(
-              mutateMatrixState({
+              store.actions.mutateMatrixState({
                 potential_recluster: {
                   distance_metric,
                   linkage_type,
@@ -152,11 +149,11 @@ function clustergrammer_gl(
           axis: "row" | "col" | string,
           order: "clust" | "sum" | "var" | "ini" | string
         ) => {
-          const reorderState = store.getState();
+          const reorderState = store.select("order");
           const clean_order = order
             .replace("sum", "rank")
             .replace("var", "rankvar");
-          if (reorderState.order.inst[axis] !== clean_order) {
+          if (reorderState.inst[axis] !== clean_order) {
             runReorder(
               regl,
               store,

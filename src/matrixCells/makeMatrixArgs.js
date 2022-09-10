@@ -1,33 +1,30 @@
 import { zoom_function } from "../cameras/zoomFunction";
-import { setArrsState } from "../state/reducers/arrsSlice";
 import make_opacity_arr from "./makeOpacityArr";
 import make_position_arr from "./makePositionArr";
 
 export default function make_matrix_args(regl, store) {
-  const state = store.getState();
-
   // make arrays
   const arrs = {};
   arrs.opacity_arr = make_opacity_arr(store);
   arrs.position_arr = {};
   arrs.position_arr.ini = make_position_arr(
-    state,
-    state.order.inst.row,
-    state.order.inst.col
+    store,
+    store.select("order").inst.row,
+    store.select("order").inst.col
   );
   arrs.position_arr.new = make_position_arr(
-    state,
-    state.order.new.row,
-    state.order.new.col
+    store,
+    store.select("order").new.row,
+    store.select("order").new.col
   );
-  store.dispatch(setArrsState(arrs));
+  store.dispatch(store.actions.setArrsState(arrs));
 
   const opacity_buffer = regl.buffer({
     type: "float",
     usage: "dynamic",
   })(arrs.opacity_arr);
-  const tile_width = state.visualization.viz_dim.tile_width;
-  const tile_height = state.visualization.viz_dim.tile_height;
+  const tile_width = store.select("visualization").viz_dim.tile_width;
+  const tile_height = store.select("visualization").viz_dim.tile_height;
   const triangle_verts = [
     [tile_width, 0.0],
     [tile_width, tile_height],
@@ -129,8 +126,8 @@ export default function make_matrix_args(regl, store) {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop("run_animation"),
-      pos_rgb: state.cat_viz.mat_colors.pos_rgb,
-      neg_rgb: state.cat_viz.mat_colors.neg_rgb,
+      pos_rgb: store.select("cat_viz").mat_colors.pos_rgb,
+      neg_rgb: store.select("cat_viz").mat_colors.neg_rgb,
     },
     instances: num_instances,
     depth: {

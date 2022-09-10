@@ -39,22 +39,22 @@ const initialState: CatVizState = {
   show_categories: {},
 } as CatVizState;
 
-export const catVizSlice = createSlice({
-  name: "cat_viz",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setCatVizState: (state, action: PayloadAction<CatVizState>) => {
-      state = action.payload;
-      return state;
+export const catVizSlice = (id: string) =>
+  createSlice({
+    name: `${id}_cat_viz`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setCatVizState: (state, action: PayloadAction<CatVizState>) => {
+        state = action.payload;
+        return state;
+      },
+      mutateCatVizState: (
+        state,
+        action: PayloadAction<Partial<CatVizState>>
+      ) => {
+        state = merge(state, action.payload);
+        return state;
+      },
     },
-    mutateCatVizState: (state, action: PayloadAction<Partial<CatVizState>>) => {
-      state = merge(state, action.payload);
-      return state;
-    },
-  },
-});
-
-export const { setCatVizState, mutateCatVizState } = catVizSlice.actions;
-
-export default catVizSlice.reducer;
+  });

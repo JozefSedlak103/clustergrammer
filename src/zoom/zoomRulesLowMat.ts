@@ -1,7 +1,4 @@
-import { Store } from "@reduxjs/toolkit";
 import { cloneDeep } from "lodash";
-import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
-import { RootState } from "../state/store/store";
 import calc_cursor_relative from "./calcCursorRelative";
 import calc_pan_by_zoom from "./calcPanByZoom";
 import calc_potential_total_pan from "./calcPotentialTotalPan";
@@ -11,12 +8,12 @@ import sanitize_inst_zoom from "./sanitizeInstZoom";
 import sanitize_potential_zoom from "./sanitizePotentialZoom";
 
 export default (function zoom_rules_low_mat(
-  store: Store<RootState>,
+  store: NamespacedStore,
   axis: "x" | "y"
 ) {
   const {
     visualization: { viz_dim, zoom_data: zd },
-  } = store.getState();
+  } = store.selectAll();
   const zoom_data = zd[axis];
   const viz_dim_heat = viz_dim.heat[axis];
   const viz_dim_mat = viz_dim.mat[axis];
@@ -79,7 +76,7 @@ export default (function zoom_rules_low_mat(
   );
 
   store.dispatch(
-    mutateZoomData({
+    store.actions.mutateZoomData({
       [axis]: finalZoomData,
     })
   );

@@ -21,21 +21,18 @@ const initialState: DownloadState = {
   meta_type: "col",
 };
 
-export const downloadSlice = createSlice({
-  name: "download",
-  initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {
-    setDelimiterForFileType: (
-      state,
-      action: PayloadAction<DownloadState["delimiter_name"]>
-    ) => {
-      state.delimiter_name = action.payload;
-      return state;
+export const downloadSlice = (id: string) =>
+  createSlice({
+    name: `${id}_download`,
+    initialState,
+    // The `reducers` field lets us define reducers and generate associated actions
+    reducers: {
+      setDelimiterForFileType: (
+        state,
+        action: PayloadAction<DownloadState["delimiter_name"]>
+      ) => {
+        state.delimiter_name = action.payload;
+        return state;
+      },
     },
-  },
-});
-
-export const { setDelimiterForFileType } = downloadSlice.actions;
-
-export default downloadSlice.reducer;
+  });

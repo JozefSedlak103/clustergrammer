@@ -5,28 +5,27 @@ import { rotation, scaling } from "../draws/mat3Transform";
 import make_viz_aid_tri_pos_arr from "./makeVizAidTriPosArr";
 
 export default (function make_viz_aid_tri_args(regl, store, inst_axis) {
-  const state = store.getState();
-  const num_labels = state.labels["num_" + inst_axis];
+  const num_labels = store.select("labels")["num_" + inst_axis];
   let tri_height;
   let tri_width;
   let mat_size;
   let top_offset;
   if (inst_axis === "col") {
-    mat_size = state.visualization.viz_dim.heat_size.x;
+    mat_size = store.select("visualization").viz_dim.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
-    const reduce_height = state.visualization.zoom_data.x.total_zoom;
+    const reduce_height = store.select("visualization").zoom_data.x.total_zoom;
     tri_height = (mat_size / num_labels) * reduce_height;
     tri_width = mat_size / num_labels;
     // original top_offset calc (undercorrects)
-    top_offset = -state.visualization.viz_dim.mat_size.y - tri_height;
+    top_offset = -store.select("visualization").viz_dim.mat_size.y - tri_height;
   } else {
     // rows have fixed viz aid triangle 'heights'
-    mat_size = state.visualization.viz_dim.heat_size.y;
+    mat_size = store.select("visualization").viz_dim.heat_size.y;
     // tri_height = 0.0125;
     tri_height = 0.02;
     tri_width = mat_size / num_labels;
-    top_offset = -state.visualization.viz_dim.mat_size.x - tri_height;
+    top_offset = -store.select("visualization").viz_dim.mat_size.x - tri_height;
   }
   const tri_offset_array_inst = make_viz_aid_tri_pos_arr(store, inst_axis);
   const tri_offset_array_new = make_viz_aid_tri_pos_arr(store, inst_axis);
@@ -41,15 +40,15 @@ export default (function make_viz_aid_tri_args(regl, store, inst_axis) {
     rotation_radians = Math.PI / 2;
   }
   const mat_rotate = rotation(rotation_radians);
-  const total_zoom = state.visualization.zoom_data.x.total_zoom;
+  const total_zoom = store.select("visualization").zoom_data.x.total_zoom;
   const inst_rgba = color_to_rgba("#eee", 1.0);
   // want to be able to set color based on search status
   const color_arr_ini = Array(num_labels).fill(inst_rgba);
-  const searched_rows = state.search.searched_rows;
+  const searched_rows = store.select("search").searched_rows;
   // change color of selected rows
   const color_arr = color_arr_ini.map((x, i) => {
     if (inst_axis === "row") {
-      const inst_name = state.network.row_node_names[i];
+      const inst_name = store.select("network").row_node_names[i];
       if (searched_rows.includes(inst_name)) {
         x = color_to_rgba("red", 1.0);
       }
@@ -155,7 +154,7 @@ export default (function make_viz_aid_tri_args(regl, store, inst_axis) {
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interpFun(store))),
-      run_animation: state.animation.running,
+      run_animation: store.select("animation").running,
     },
     count: 3,
     instances: num_labels,

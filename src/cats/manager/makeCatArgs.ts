@@ -1,9 +1,8 @@
-import { Store } from "@reduxjs/toolkit";
 import { Regl } from "regl";
 import { zoom_function } from "../../cameras/zoomFunction";
 import color_to_rgba from "../../colors/colorToRgba";
 import { rotation, scaling } from "../../draws/mat3Transform";
-import { RootState } from "../../state/store/store";
+import { NamespacedStore } from "../../state/store/store";
 import { CatArrs } from "./catArgsManager";
 import get_cat_value from "./helpers/getCatValue";
 
@@ -11,7 +10,7 @@ type ReglProps = { run_animation: boolean };
 
 export default (function makeCatArgs(
   regl: Regl,
-  store: Store<RootState>,
+  store: NamespacedStore,
   cat_arrs: CatArrs,
   inst_axis: string,
   cat_index: number
@@ -23,7 +22,7 @@ export default (function makeCatArgs(
     network,
     cat_viz,
     interaction,
-  } = store.getState();
+  } = store.selectAll();
   const cat_index_name = "cat-" + String(cat_index);
   /*
   

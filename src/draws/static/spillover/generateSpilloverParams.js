@@ -2,7 +2,7 @@ import * as _ from "underscore";
 import calc_spillover_triangles from "./calcSpilloverTriangles";
 import make_spillover_args from "./makeSpilloverArgs";
 
-export default (function generate_spillover_params(regl, state) {
+export default (function generateSpilloverParams(regl, store) {
   const spillover_args = {};
   // inst_depth is passed to spillover rects
   // var inst_color = [1, 0, 0, 1];
@@ -27,6 +27,6 @@ export default (function generate_spillover_params(regl, state) {
       inst_color
     );
   });
-  const spillover_triangles = calc_spillover_triangles(state);
+  const spillover_triangles = calc_spillover_triangles(store);
   return { spillover_triangles, spillover_args };
 });

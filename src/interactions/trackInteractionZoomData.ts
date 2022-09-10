@@ -1,7 +1,5 @@
-import { Store } from "@reduxjs/toolkit";
 import { cloneDeep } from "lodash";
-import { setZoomData } from "../state/reducers/visualization/visualizationSlice";
-import { RootState } from "../state/store/store";
+import { NamespacedStore } from "../state/store/store";
 import { InteractionEvent } from "../types/general";
 import zoom_rules_low_mat from "../zoom/zoomRulesLowMat";
 import findMouseoverElement from "./findMouseoverElement";
@@ -9,13 +7,13 @@ import keepTrackOfInteractions from "./keepTrackOfInteractions";
 import keepTrackOfMouseovers from "./keepTrackOfMouseovers";
 
 export default (function track_interaction_zoom_data(
-  store: Store<RootState>,
+  store: NamespacedStore,
   ev: InteractionEvent
 ) {
-  const state = store.getState();
   const dispatch = store.dispatch;
 
-  const { zoom_data: oldZoomData, zoom_restrict } = state.visualization;
+  const { zoom_data: oldZoomData, zoom_restrict } =
+    store.select("visualization");
   const zoom_data = cloneDeep(oldZoomData);
   const interaction_types = ["wheel", "touch", "pinch"];
   if (ev.buttons || interaction_types.indexOf(ev.type) !== -1) {
@@ -59,7 +57,7 @@ export default (function track_interaction_zoom_data(
       }
       zoom_data.y.inst_zoom = newYInstZoom;
     }
-    dispatch(setZoomData(zoom_data));
+    dispatch(store.actions.setZoomData(zoom_data));
     zoom_rules_low_mat(store, "x");
     zoom_rules_low_mat(store, "y");
     keepTrackOfInteractions(store);

@@ -3,7 +3,6 @@ import { drag } from "d3-drag";
 import { pointer, select } from "d3-selection";
 import { clamp } from "lodash";
 import draw_webgl_layers from "../draws/drawWebglLayers";
-import { setOpacityScale } from "../state/reducers/matrixSlice";
 import custom_round from "../utils/customRound";
 
 export default (function build_opacity_slider(
@@ -12,7 +11,6 @@ export default (function build_opacity_slider(
   catArgsManager,
   camerasManager
 ) {
-  const state = store.getState();
   const slider_length = 100;
   const rect_height = slider_length + 20;
   const rect_width = 20;
@@ -26,7 +24,7 @@ export default (function build_opacity_slider(
 
   function change_opacity(slider_value) {
     slider_value = custom_round(slider_value, 2);
-    store.dispatch(setOpacityScale(slider_value));
+    store.dispatch(store.actions.setOpacityScale(slider_value));
     camerasManager.remakeMatrixArgs(store);
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
   }
@@ -42,14 +40,13 @@ export default (function build_opacity_slider(
     // get the value of the slider
     const slider_value = get_slider_value(pos);
     // move the slider dot
-    select(state.visualization.rootElementId + " .opacity_group_circle").attr(
-      "transform",
-      `translate(0, ${pos})`
-    );
+    select(
+      store.select("visualization").rootElementId + " .opacity_group_circle"
+    ).attr("transform", `translate(0, ${pos})`);
     // update the slider text
-    select(`${state.visualization.rootElementId} .opacity_level_text`).text(
-      custom_round(1 - slider_value, 1)
-    );
+    select(
+      `${store.select("visualization").rootElementId} .opacity_level_text`
+    ).text(custom_round(1 - slider_value, 1));
     // change the opacity of the matrix cells
     change_opacity(slider_value);
   }
@@ -75,7 +72,7 @@ export default (function build_opacity_slider(
     });
 
   const slider_group = select(
-    state.visualization.rootElementId + " .control_svg"
+    store.select("visualization").rootElementId + " .control_svg"
   )
     .append("g")
     .classed("opacity_slider_group", true)
@@ -169,7 +166,7 @@ export default (function build_opacity_slider(
   slider_group
     .append("text")
     .classed("opacity_level_text", true)
-    .text(state.matrix.opacity_scale)
+    .text(store.select("matrix").opacity_scale)
     .attr("transform", "translate(-5, 140) rotate(90)")
     .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr("font-weight", 400)

@@ -1,25 +1,24 @@
 import * as _ from "underscore";
 
 export default (function calc_dendro_triangles(store, dendro, inst_axis) {
-  const state = store.getState();
   const triangle_info = {};
-  const inst_nodes = state.network[inst_axis + "_nodes"];
+  const inst_nodes = store.select("network")[inst_axis + "_nodes"];
   let heat_shift;
   let heat_size;
   let tri_width;
-  const num_labels = state.labels["num_" + inst_axis];
+  const num_labels = store.select("labels")["num_" + inst_axis];
   if (inst_axis === "row") {
-    heat_size = state.visualization.viz_dim.heat_size.y;
+    heat_size = store.select("visualization").viz_dim.heat_size.y;
     tri_width = heat_size / num_labels;
   } else {
-    heat_size = state.visualization.viz_dim.heat_size.x;
+    heat_size = store.select("visualization").viz_dim.heat_size.x;
     tri_width = heat_size / num_labels;
   }
-  const inst_order = state.order.inst[inst_axis];
+  const inst_order = store.select("order").inst[inst_axis];
   _.each(inst_nodes, function (inst_node) {
     const order_index = inst_node[inst_order];
     let inst_group;
-    if ("linkage" in state.network) {
+    if ("linkage" in store.select("network")) {
       // new way of getting group
       // //////////////////////////////////////////
       inst_group = inst_node.group_links;
@@ -32,19 +31,19 @@ export default (function calc_dendro_triangles(store, dendro, inst_axis) {
     let inst_top;
     if (inst_axis === "row") {
       heat_shift =
-        state.visualization.viz_dim.mat_size.y -
-        state.visualization.viz_dim.heat_size.y;
+        store.select("visualization").viz_dim.mat_size.y -
+        store.select("visualization").viz_dim.heat_size.y;
       inst_top =
-        -state.node_canvas_pos.y_arr[order_index] -
+        -store.select("node_canvas_pos").y_arr[order_index] -
         2 * tri_width -
         2 * heat_shift;
     } else {
       // emperical rule
       heat_shift =
-        state.visualization.viz_dim.mat_size.x -
-        state.visualization.viz_dim.heat_size.x;
+        store.select("visualization").viz_dim.mat_size.x -
+        store.select("visualization").viz_dim.heat_size.x;
       inst_top =
-        -state.node_canvas_pos.x_arr[order_index] -
+        -store.select("node_canvas_pos").x_arr[order_index] -
         2 * tri_width +
         2 * heat_shift;
     }

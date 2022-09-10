@@ -1,10 +1,8 @@
 import * as _ from "underscore";
 import gather_text_triangles from "../../../matrixLabels/gatherTextTriangles";
-import { mutateLabelsState } from "../../reducers/labels/labelsSlice";
-import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice";
 
 export default (function generateTextTriangleParams(store, viz_area) {
-  const { labels, visualization } = store.getState();
+  const { labels, visualization } = store.selectAll();
   // save text triangles for later use
   const text_triangles = {
     row: {},
@@ -15,7 +13,7 @@ export default (function generateTextTriangleParams(store, viz_area) {
     },
   };
   store.dispatch(
-    mutateVisualizationState({
+    store.actions.mutateVisualizationState({
       text_triangles,
     })
   );
@@ -25,7 +23,7 @@ export default (function generateTextTriangleParams(store, viz_area) {
     precalc[inst_axis] =
       labels["num_" + inst_axis] < visualization.max_num_text;
     store.dispatch(
-      mutateLabelsState({
+      store.actions.mutateLabelsState({
         precalc,
       })
     );
@@ -40,7 +38,7 @@ export default (function generateTextTriangleParams(store, viz_area) {
 
   // visualization updates
   store.dispatch(
-    mutateVisualizationState({
+    store.actions.mutateVisualizationState({
       text_triangles,
     })
   );

@@ -1,17 +1,14 @@
-import { setRowAndColCanvasPositions } from "../../reducers/rowAndColCanvasPositionsSlice";
-
 export default (function calc_row_and_col_canvas_positions(store) {
-  const state = store.getState();
   let inst_axis = "row";
-  const num_row = state.labels["num_" + inst_axis];
+  const num_row = store.select("labels")["num_" + inst_axis];
   inst_axis = "col";
-  const num_col = state.labels["num_" + inst_axis];
+  const num_col = store.select("labels")["num_" + inst_axis];
   // draw matrix cells
   // ///////////////////////////////////////
   // set up offset array for buffer
   const offset = {};
-  offset.x = state.visualization.viz_dim.center.x;
-  offset.y = state.visualization.viz_dim.center.y;
+  offset.x = store.select("visualization").viz_dim.center.x;
+  offset.y = store.select("visualization").viz_dim.center.y;
   // generate x position array
   const x_arr = Array(num_col)
     .fill()
@@ -27,5 +24,5 @@ export default (function calc_row_and_col_canvas_positions(store) {
   canvas_pos.x_arr = x_arr;
   canvas_pos.y_arr = y_arr;
 
-  store.dispatch(setRowAndColCanvasPositions(canvas_pos));
+  store.dispatch(store.actions.setRowAndColCanvasPositions(canvas_pos));
 });

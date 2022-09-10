@@ -3,7 +3,7 @@ import makeCatArgs from "./makeCatArgs";
 import makeCatPositionArray from "./makeCatPositionArray";
 
 export default function generate_cat_args_arrs(regl, store) {
-  const { cat_data } = store.getState();
+  const cat_data = store.select("cat_data");
   const cat_args = {};
   cat_args.row = [];
   cat_args.col = [];

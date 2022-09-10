@@ -1,16 +1,14 @@
-import { Store } from "@reduxjs/toolkit";
 import { cloneDeep } from "lodash";
 import { ZoomAxisData } from "../state/reducers/visualization/visualizationSlice";
-import { RootState } from "../state/store/store";
 
 export default (function sanitize_potential_zoom(
-  store: Store<RootState>,
+  store: NamespacedStore,
   zoom_data: ZoomAxisData,
   axis: "x" | "y"
 ) {
   const {
     visualization: { zoom_restrict },
-  } = store.getState();
+  } = store.selectAll();
   const max_zoom = zoom_restrict[axis].max;
   const min_zoom = zoom_restrict[axis].min;
 
