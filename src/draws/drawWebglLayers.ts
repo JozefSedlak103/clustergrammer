@@ -1,6 +1,7 @@
 import { Regl } from "regl";
 import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
+import { NamespacedStore } from "../state/store/store";
 import drawAxisComponents from "./drawAxisComponents";
 import drawMatrixComponents from "./drawMatrixComponents";
 import drawStaticComponents from "./static/drawStaticComponents";

@@ -2,6 +2,7 @@ import { Regl } from "regl";
 import { CamerasManager } from "../../cameras/camerasManager";
 import { CatArgsManager } from "../../cats/manager/catArgsManager";
 import drawCommands from "../../draws/drawCommands";
+import { NamespacedStore } from "../../state/store/store";
 
 export default function drawLabelsTooltipsOrDendro(
   regl: Regl,

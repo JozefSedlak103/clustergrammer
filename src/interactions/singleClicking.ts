@@ -1,4 +1,5 @@
 import { OnClickCallback } from "..";
+import { NamespacedStore } from "../state/store/store";
 
 export default function singleClicking(
   store: NamespacedStore,

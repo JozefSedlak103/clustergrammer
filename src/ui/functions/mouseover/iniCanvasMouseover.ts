@@ -1,5 +1,6 @@
 import { computePosition, flip, offset, shift } from "@floating-ui/dom";
 import { select } from "d3-selection";
+import { NamespacedStore } from "../../../state/store/store";
 import { CANVAS_CONTAINER_CLASSNAME } from "../../ui.const";
 
 export const TOOLTIP_ID = "cg-tooltip";
@@ -75,8 +76,6 @@ export default function ini_canvas_mouseover(
   const canvas = document.getElementsByTagName("canvas")?.[0];
 
   canvas.addEventListener("mousemove", (e) => {
-    const state = store.selectAll();
-
     // show a tooltip if we're on a matrix cell
     const tooltip = document.getElementById(TOOLTIP_ID);
     if (
@@ -89,7 +88,7 @@ export default function ini_canvas_mouseover(
         store.select("tooltip").tooltip_type !== "out-of-bounds" &&
         store
           .select("tooltip")
-          .enabledTooltips.some((x) =>
+          .enabledTooltips.some((x: any) =>
             store.select("tooltip").tooltip_type?.includes(x)
           )
       ) {

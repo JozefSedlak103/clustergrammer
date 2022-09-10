@@ -1,5 +1,6 @@
 import colorToRgba from "../../../colors/colorToRgba";
 import { MatColors } from "../../reducers/catVizSlice";
+import { NamespacedStore } from "../../store/store";
 
 const MAT_COLORS: MatColors = {
   pos_rgb: [1, 0, 0],

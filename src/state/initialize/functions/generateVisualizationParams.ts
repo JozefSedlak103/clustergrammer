@@ -1,6 +1,7 @@
 import { scaleLinear } from "d3-scale";
 import calcVizArea from "../../../params/calcVizArea";
 import iniZoomRestrict from "../../../zoom/iniZoomRestrict";
+import { NamespacedStore } from "../../store/store";
 import generateTextTriangleParams from "./generateTextTriangleParams";
 import initializeTextZoom from "./initializeTextZoom";
 

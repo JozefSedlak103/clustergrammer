@@ -3,6 +3,7 @@ import { Regl } from "regl";
 import { CamerasManager } from "../../../cameras/camerasManager";
 import { CatArgsManager } from "../../../cats/manager/catArgsManager";
 import drawInteracting from "../../../draws/drawInteracting";
+import { NamespacedStore } from "../../../state/store/store";
 import draw_background_calculations from "../drawBackgroundCalculations";
 import drawLabelsTooltipsOrDendro from "../drawLabelsTooltipsOrDendro";
 import drawMouseover from "../mouseover/drawMouseover";

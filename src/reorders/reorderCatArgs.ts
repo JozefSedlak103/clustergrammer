@@ -1,5 +1,6 @@
 import * as _ from "underscore";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
+import { NamespacedStore } from "../state/store/store";
 
 export default (function reorderCatArgs(
   store: NamespacedStore,

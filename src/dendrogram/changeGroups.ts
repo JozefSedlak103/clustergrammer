@@ -1,6 +1,7 @@
 import { select } from "d3-selection";
 import { cloneDeep } from "lodash";
 import { Regl } from "regl";
+import { NamespacedStore } from "../state/store/store";
 import alt_slice_linkage from "./altSliceLinkage";
 import calcDendroTriangles from "./calcDendroTriangles";
 

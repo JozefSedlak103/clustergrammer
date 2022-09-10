@@ -5,6 +5,7 @@ import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
 import changeGroups from "../dendrogram/changeGroups";
 import runReorder from "../reorders/runReorder";
+import { NamespacedStore } from "../state/store/store";
 import { hcluster } from "./clusterfckLocal/hcluster";
 import distanceFunctions from "./distanceFunctions";
 import get_order_and_groups_clusterfck_tree from "./getOrderAndGroupsClusterfckTree";
@@ -17,10 +18,8 @@ export default function recluster(
 ) {
   // get potential recluster options
   const {
-    matrix: {
-      potential_recluster: { distance_metric, linkage_type },
-    },
-  } = state;
+    potential_recluster: { distance_metric, linkage_type },
+  } = store.select("matrix");
   const new_view: Record<string, any> = {};
   new_view.N_row_sum = "null";
   new_view.N_row_var = "null";
@@ -40,7 +39,7 @@ export default function recluster(
       mat = _.clone(store.select("network").mat);
       names = store
         .select("network")
-        .row_nodes.map((x) => x.name.split(": ")[1]);
+        .row_nodes.map((x: any) => x.name.split(": ")[1]);
       name_nodes = "row_nodes";
     } else {
       // TODO: HERE:
@@ -56,7 +55,7 @@ export default function recluster(
       }
       names = store
         .select("network")
-        .col_nodes.map((x) => x.name.split(": ")[1]);
+        .col_nodes.map((x: any) => x.name.split(": ")[1]);
       name_nodes = "col_nodes";
     }
     // average, single, complete

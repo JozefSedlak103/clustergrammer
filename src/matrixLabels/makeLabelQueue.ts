@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
+import { NamespacedStore } from "../state/store/store";
 
 export default (function make_label_queue(store: NamespacedStore) {
   const labels = store.select("labels");

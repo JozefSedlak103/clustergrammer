@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { merge } from "lodash";
 
 export type GeneDatum = {
   name: string;
@@ -20,9 +21,7 @@ export const hzomeSlice = (id: string) =>
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
       mutateHzomeGeneData: (state, action: PayloadAction<HzomeState>) => {
-        store.select("gene_data = merge")(
-          store.select("gene_data, action").payload
-        );
+        state.gene_data = merge(state.gene_data, action.payload);
         return state;
       },
     },

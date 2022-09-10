@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash";
+import { NamespacedStore } from "../state/store/store";
 import calc_cursor_relative from "./calcCursorRelative";
 import calc_pan_by_zoom from "./calcPanByZoom";
 import calc_potential_total_pan from "./calcPotentialTotalPan";

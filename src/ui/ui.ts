@@ -1,6 +1,7 @@
 import { Regl } from "regl";
 import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
+import { NamespacedStore } from "../state/store/store";
 import run_viz from "./functions/animation/runViz";
 import build_dendrogram_sliders from "./functions/buildDendrogramSliders";
 import build_control_panel from "./functions/controlPanel/buildControlPanel";

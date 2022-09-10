@@ -4,6 +4,7 @@ import { Regl } from "regl";
 import * as _ from "underscore";
 import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
+import { NamespacedStore } from "../state/store/store";
 import { Axis } from "../types/general";
 import runReorder from "./runReorder";
 

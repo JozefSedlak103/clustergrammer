@@ -81,7 +81,7 @@ export default function initialize_params(
   // tooltip setup
   store.dispatch(
     store.actions.setTooltipState({
-      ...store.select("tooltip,")
+      ...store.select("tooltip"),
       ...(args.enabledTooltips?.length
         ? { enabledTooltips: args.enabledTooltips }
         : {}),

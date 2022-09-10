@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash";
 import { ZoomAxisData } from "../state/reducers/visualization/visualizationSlice";
+import { NamespacedStore } from "../state/store/store";
 
 export default (function sanitize_potential_zoom(
   store: NamespacedStore,

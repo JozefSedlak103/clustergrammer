@@ -9,6 +9,7 @@ import updateTextTriangleOrder from "../../../matrixLabels/updateTextTriangleOrd
 import { LabelsState } from "../../../state/reducers/labels/labelsSlice";
 import { OrderState } from "../../../state/reducers/order/orderSlice";
 import { VisualizationState } from "../../../state/reducers/visualization/visualizationSlice";
+import { NamespacedStore } from "../../../state/store/store";
 import { Axis } from "../../../types/general";
 
 export default (function end_animation(
