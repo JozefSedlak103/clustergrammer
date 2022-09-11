@@ -16,13 +16,6 @@ export default function drawLabelsTooltipsOrDendro(
   // /////////////////////////////
   drawCommands(regl, store, catArgsManager, camerasManager);
 
-  if (store.select("tooltip").show_tooltip) {
-    dispatch(
-      store.actions.mutateTooltipState({
-        show_tooltip: false,
-      })
-    );
-  }
   // turn back off draw dendro
   if (store.select("dendro").update_dendro) {
     dispatch(

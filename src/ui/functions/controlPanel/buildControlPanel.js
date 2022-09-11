@@ -7,7 +7,7 @@ import download_matrix from "../../../download/downloadMatrix";
 import download_metadata from "../../../download/downloadMetadata";
 import draw_webgl_layers from "../../../draws/drawWebglLayers";
 import runReorder from "../../../reorders/runReorder";
-import { CONTROL_PANEL_CLASSNAME } from "../../ui.const";
+import { CONTROL_PANEL_CONTAINER_CLASSNAME } from "../../ui.const";
 import buildReclusterSection from "./buildReclusterSection";
 
 export default function build_control_panel(
@@ -23,17 +23,21 @@ export default function build_control_panel(
   const text_color = "#47515b";
   const button_color = "#eee";
 
-  if (select(base_container).select(`.${CONTROL_PANEL_CLASSNAME}`).empty()) {
+  if (
+    select(base_container)
+      .select(`.${CONTROL_PANEL_CONTAINER_CLASSNAME}`)
+      .empty()
+  ) {
     // make control panel (needs to appear above canvas)
     select(base_container)
       .insert("div", ":first-child")
-      .attr("class", CONTROL_PANEL_CLASSNAME)
+      .attr("class", CONTROL_PANEL_CONTAINER_CLASSNAME)
       .style("width", "100%")
       .style("cursor", "default");
   }
 
   const control_svg = select(base_container)
-    .select(`.${CONTROL_PANEL_CLASSNAME}`)
+    .select(`.${CONTROL_PANEL_CONTAINER_CLASSNAME}`)
     .append("svg")
     .classed("control_svg", true)
     .attr("height", i_height)
@@ -271,7 +275,9 @@ export default function build_control_panel(
   // row search
   // /////////////////
   const search_container = select(
-    store.select("visualization").rootElementId + " .control-container"
+    `${
+      store.select("visualization").rootElementId
+    } .${CONTROL_PANEL_CONTAINER_CLASSNAME}`
   )
     .append("div")
     .classed("row_search_container", true)
@@ -324,8 +330,9 @@ export default function build_control_panel(
     .style("font-weight", 400)
     .on("click", () => {
       const inst_value = select(
-        store.select("visualization").rootElementId +
-          " .control-container .row_search_box"
+        `${
+          store.select("visualization").rootElementId
+        } .${CONTROL_PANEL_CONTAINER_CLASSNAME} .row_search_box`
       ).node().value;
       const searchedRows = inst_value.split(", ");
       dispatch(store.actions.setSearchedRows(searchedRows));

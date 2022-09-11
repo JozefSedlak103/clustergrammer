@@ -6,7 +6,6 @@ import drawInteracting from "../../../draws/drawInteracting";
 import { NamespacedStore } from "../../../state/store/store";
 import draw_background_calculations from "../drawBackgroundCalculations";
 import drawLabelsTooltipsOrDendro from "../drawLabelsTooltipsOrDendro";
-import drawMouseover from "../mouseover/drawMouseover";
 import end_animation from "./endAnimation";
 import start_animation from "./startAnimation";
 
@@ -56,23 +55,20 @@ export default function run_viz(
       end_animation(regl, store, catArgsManager, camerasManager);
     }
 
-    const fourthState = store.selectAll();
     if (
-      fourthState.interaction.still_interacting === true ||
-      fourthState.animation.ini_viz === true ||
-      fourthState.animation.running === true ||
-      fourthState.animation.update_viz === true
+      store.select("interaction").still_interacting ||
+      store.select("animation").ini_viz ||
+      store.select("animation").running ||
+      store.select("animation").update_viz
     ) {
       drawInteracting(regl, store, catArgsManager, camerasManager);
       dispatch(store.actions.mutateAnimationState({ update_viz: false }));
-    } else if (fourthState.interaction.still_mouseover === true) {
+    } else if (store.select("tooltip").show_tooltip) {
       // mouseover may result in draw command
-      drawMouseover(store);
       draw_background_calculations(store);
     } else if (
-      fourthState.labels.draw_labels ||
-      fourthState.tooltip.show_tooltip ||
-      fourthState.dendro.update_dendro
+      store.select("labels").draw_labels ||
+      store.select("dendro").update_dendro
     ) {
       drawLabelsTooltipsOrDendro(regl, store, catArgsManager, camerasManager);
     } else {

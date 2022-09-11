@@ -2,6 +2,7 @@
 import { select, selectAll } from "d3-selection";
 import draw_webgl_layers from "../../../draws/drawWebglLayers";
 import recluster from "../../../recluster/recluster";
+import { CONTROL_PANEL_CONTAINER_CLASSNAME } from "../../ui.const";
 
 export default (function build_recluster_section(
   regl,
@@ -24,7 +25,9 @@ export default (function build_recluster_section(
   const active_run_color = "#00FF75";
   const active_button_color = "#008000";
   const control_svg = select(
-    store.select("visualization").rootElementId + " .control-container svg"
+    `${
+      store.select("visualization").rootElementId
+    } .${CONTROL_PANEL_CONTAINER_CLASSNAME} svg`
   );
   control_svg
     .append("g")
