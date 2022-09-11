@@ -12,13 +12,18 @@ The project lead is [Kevin Ulrich](https://github.com/moromis), who can be [cont
 
 The original documentation for Clustergrammer and all its associated projects is [located here](http://clustergrammer.readthedocs.io), though it mainly applies in terms of creating formatted data with [Clustergrammer-PY](https://clustergrammer.readthedocs.io/clustergrammer_py.html) and the [desired format for the data for Javascript applications](https://clustergrammer.readthedocs.io/clustergrammer_js.html#visualization-json).
 
+## Contributions
+
+Contributions are totally welcome -- there are two ways to contribute:
+1. Find [an issue](https://github.com/GumusLab/clustergrammer/issues) that you want to tackle and comment on it/submit a PR for it.
+2. If you find a bug with Clustergrammer or want to make an enhancement, please write [an issue](https://github.com/GumusLab/clustergrammer/issues) detailing the change and make sure the community is on board, and then submit a PR for the changes.
+
 ## Setup for Local Development
 
 1. Clone the code to your local machine
 2. Run `yarn` to install all required node modules
-3. Run `yarn build-for-example` to build the package locally into the `example/example-app` folder
-4. `cd example/example-app` and `yarn start` to start the local test app
-5. After you make changes to the code, re-run `yarn build-for-example` and refresh the webpage to see the changes
+3. Run `yarn build-for-example` to build the package locally into the `example/example-app` folder and watch for changes (will rebuild automatically)
+4. Open a new terminal tab or window, `cd example/example-app` and `yarn start` to start the local test app
 
 ## Licensing
 
