@@ -4,8 +4,8 @@ import { merge } from "lodash";
 export type CurrentPanel = "reorder" | "recluster";
 
 export type MatColors = {
-  pos: number[];
-  neg: number[];
+  pos_rgb: number[];
+  neg_rgb: number[];
 };
 
 export interface CatVizState {

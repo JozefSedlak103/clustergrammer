@@ -13,6 +13,8 @@ export type OnClickCallback =
   | (({ row, col, clickType }: OnClickCallbackProps) => void)
   | undefined;
 
+type Color = number[] | string;
+
 export type ClustergrammerProps = {
   use_hzome?: boolean;
   container: HTMLElement;
@@ -26,5 +28,5 @@ export type ClustergrammerProps = {
   disableTooltip?: boolean;
   enabledTooltips?: Array<"dendro" | "cat" | "cell" | "label" | string>;
   labelLength?: number;
-  matrixColors?: { pos: number[]; neg: number[] };
+  matrixColors?: { pos: Color; neg: Color };
 };

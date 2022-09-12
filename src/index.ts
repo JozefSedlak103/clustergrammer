@@ -4,7 +4,10 @@ import { Regl } from "regl";
 import { CamerasManager } from "./cameras/camerasManager";
 import { CatArgsManager } from "./cats/manager/catArgsManager";
 import draw_webgl_layers from "./draws/drawWebglLayers";
-import { ClustergrammerInstance, ClustergrammerProps } from "./index.types";
+import type {
+  ClustergrammerInstance,
+  ClustergrammerProps,
+} from "./index.types";
 import recluster from "./recluster/recluster";
 import runReorder from "./reorders/runReorder";
 import initializeRegl from "./state/initialize/functions/initializeRegl";
