@@ -42,7 +42,7 @@ export class UI {
     if (showDendroSliders) {
       build_dendrogram_sliders(regl, store);
     }
-    ini_canvas_mouseover(store, container);
+    ini_canvas_mouseover(store);
     run_viz(regl, store, catArgsManager, camerasManager);
   }
 }
