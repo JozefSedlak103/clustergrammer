@@ -115,7 +115,7 @@ export default function initialize_params(
   );
 
   // matrix color parameters
-  setCatVizMatrixColors(store);
+  setCatVizMatrixColors(store, args);
 
   // dendrogram state
   initializeDendrogramState(store);
