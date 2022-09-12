@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import cgl from "./cg";
-import { ClustergrammerProps } from "./cg/index.types";
+import type { ClustergrammerProps } from "./cg/index.types";
 import cytofData from "./data/cytof.json";
 import multViewData from './data/mult_view.json';
 
