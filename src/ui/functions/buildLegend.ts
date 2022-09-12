@@ -11,6 +11,8 @@ export const buildLegend = (store: NamespacedStore) => {
   const colors = store.select("cat_viz").mat_colors;
   const mat = store.select("network").mat;
   const flatMat = flatten<number>(mat);
+  const min = customRound(Math.min(...flatMat), 2);
+  const max = customRound(Math.max(...flatMat), 2);
   const containerId = store.select("visualization").rootElementId;
 
   const legend = document.createElement("div");
@@ -28,22 +30,20 @@ export const buildLegend = (store: NamespacedStore) => {
   legendColors.id = `${legend.id}-colors`;
   legendColors.style.height = "80%";
   legendColors.style.width = LEGEND_WIDTH;
-  legendColors.style.backgroundImage = `linear-gradient(${rgbArrayToString(
-    colors.pos
-  )}, white, ${rgbArrayToString(colors.neg)})`;
+  legendColors.style.background = "white";
+  const maxColor = max > 0 ? rgbArrayToString(colors.pos_rgb) : "";
+  const minColor = min < 0 ? rgbArrayToString(colors.neg_rgb) : "";
+  const gradient = `linear-gradient(
+    ${maxColor && `${maxColor}, `}
+    white
+    ${minColor && `, ${minColor}`}
+  )`;
+  legendColors.style.backgroundImage = gradient;
 
   legend.innerHTML += "<b><p>Max</p></b>";
-  legend.append(
-    document.createTextNode(
-      `${flatMat ? customRound(Math.max(...flatMat), 2) : "-"}`
-    )
-  );
+  legend.append(document.createTextNode(`${flatMat ? max : "-"}`));
   legend.append(legendColors);
-  legend.append(
-    document.createTextNode(
-      `${flatMat ? customRound(Math.min(...flatMat), 2) : "-"}`
-    )
-  );
+  legend.append(document.createTextNode(`${flatMat ? min : "-"}`));
   legend.innerHTML += "<b><p>Min</p></b>";
 
   document

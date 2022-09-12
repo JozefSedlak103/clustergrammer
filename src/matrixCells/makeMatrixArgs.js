@@ -126,8 +126,8 @@ export default function make_matrix_args(regl, store) {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop("run_animation"),
-      pos_rgb: store.select("cat_viz").mat_colors.pos,
-      neg_rgb: store.select("cat_viz").mat_colors.neg,
+      pos_rgb: store.select("cat_viz").mat_colors.pos_rgb,
+      neg_rgb: store.select("cat_viz").mat_colors.neg_rgb,
     },
     instances: num_instances,
     depth: {

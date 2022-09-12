@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import cgl from "./cg";
-import type { ClustergrammerProps } from "./cg/index.types";
+import { ClustergrammerProps } from "./cg/index.types";
 import cytofData from "./data/cytof.json";
 import multViewData from './data/mult_view.json';
 
@@ -26,7 +26,7 @@ function Clustergrammer() {
 
   useEffect(() => {
     if (!containerRef1.current) return;
-    cgl(getArgs(containerRef1.current, cytofData, { hideLegend: true }));
+    cgl(getArgs(containerRef1.current, cytofData, {  }));
   }, [containerRef1]);
 
 
