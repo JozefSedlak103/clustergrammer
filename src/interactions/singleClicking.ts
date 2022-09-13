@@ -1,4 +1,4 @@
-import { OnClickCallback } from "..";
+import { OnClickCallback } from "../index.types";
 import { NamespacedStore } from "../state/store/store";
 import { TOOLTIP_TYPES } from "../tooltip/tooltip.const";
 
