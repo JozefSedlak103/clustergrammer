@@ -49,7 +49,6 @@ export default (function getMouseoverType(store, catArgsManager) {
   const inst_pix = {};
   inst_pix.x = store.select("visualization").zoom_data.x.cursor_position;
   inst_pix.y = store.select("visualization").zoom_data.y.cursor_position;
-  console.log(inst_pix.x, inst_pix.y);
   let cat_index;
   if (
     inst_pix.x > edim.x.heat_min &&
