@@ -38,7 +38,7 @@ export class UI {
     if (!hideLegend) {
       buildLegend(store);
     }
-    ini_canvas_mouseover(store, container);
+    ini_canvas_mouseover(store);
     run_viz(regl, store, catArgsManager, camerasManager);
   }
 }
