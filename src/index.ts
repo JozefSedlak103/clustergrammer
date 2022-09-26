@@ -5,9 +5,8 @@ import { CatArgsManager } from "./cats/manager/catArgsManager";
 import draw_webgl_layers from "./draws/drawWebglLayers";
 import type {
   ClustergrammerInstance,
-  ClustergrammerProps
+  ClustergrammerProps,
 } from "./index.types";
-import make_matrix_args from "./matrixCells/makeMatrixArgs";
 import recluster from "./recluster/recluster";
 import runReorder from "./reorders/runReorder";
 import initializeRegl from "./state/initialize/functions/initializeRegl";
@@ -18,17 +17,17 @@ import { UI } from "./ui/ui";
 import { CANVAS_CONTAINER_CLASSNAME } from "./ui/ui.const";
 import zoom_rules_high_mat from "./zoom/zoomRulesHighMat";
 
-const updateSearchedRows = 
+const updateSearchedRows =
   (
     regl: Regl,
     store: NamespacedStore,
     catArgsManager: CatArgsManager,
     camerasManager: CamerasManager
-  )  => 
+  ) =>
   (rows: string[]) => {
     store.dispatch(store.actions.setSearchedRows(rows));
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
-}
+  };
 
 const updateSearchedHightlights =
   (
@@ -36,13 +35,13 @@ const updateSearchedHightlights =
     store: NamespacedStore,
     catArgsManager: CatArgsManager,
     camerasManager: CamerasManager
-  )  =>
+  ) =>
   (rows?: string[], cols?: string[]) => {
     store.dispatch(store.actions.setHighlightedRows(rows || []));
     store.dispatch(store.actions.setHighlightedCols(cols || []));
-    camerasManager.remakeMatrixArgs();
+    camerasManager.remakeMatrixArgs(store);
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
-  }
+  };
 
 const adjustOpacity =
   (
@@ -114,8 +113,18 @@ function clustergrammer_gl(
         },
       },
       utils: {
-        highlightTriangles: updateSearchedRows(regl, store, catArgsManager, camerasManager),
-        hightlightRowsCols: updateSearchedHightlights(regl, store, catArgsManager, camerasManager),
+        highlightTriangles: updateSearchedRows(
+          regl,
+          store,
+          catArgsManager,
+          camerasManager
+        ),
+        hightlightRowsCols: updateSearchedHightlights(
+          regl,
+          store,
+          catArgsManager,
+          camerasManager
+        ),
       },
       functions: {
         recluster: (distance_metric: string, linkage_type: string) => {
