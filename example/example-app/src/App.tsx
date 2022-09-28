@@ -1,8 +1,9 @@
+
 import React, { useEffect, useRef } from "react";
 import cgl from "./cg";
 import { ClustergrammerProps } from "./cg/index.types";
 import cytofData from "./data/cytof.json";
-import multViewData from './data/mult_view.json';
+import { generateRandomNetwork } from "./generateRandomNetwork";
 
 
 const getArgs = (container: HTMLElement, data: any, otherProps: Partial<ClustergrammerProps>): ClustergrammerProps => {
@@ -11,14 +12,17 @@ const getArgs = (container: HTMLElement, data: any, otherProps: Partial<Clusterg
     network: data as unknown as ClustergrammerProps["network"],
     width: "100%",
     height: "100%",
-    showControls: false,
+    showControls: true,
     onClick: ({ row, col }) => console.log(row, col),
     // disableTooltip: true,
-    enabledTooltips: ["dendro", "cell"],
-    showDendroSliders: false,
+    // enabledTooltips: ["dendro", "cell"],
+    // showDendroSliders: false,
+    hideLegend: true,
     ...otherProps,
   }
 }
+
+
 
 function Clustergrammer() {
   const containerRef1 = useRef<HTMLDivElement>(null);
@@ -32,19 +36,20 @@ function Clustergrammer() {
 
   useEffect(() => {
     if (!containerRef2.current) return;
-    cgl(getArgs(containerRef2.current, multViewData, { matrixColors: {
+    cgl(getArgs(containerRef2.current, generateRandomNetwork(2, 4), { matrixColors: {
       pos: [0, 255, 0],
       neg: [255, 0, 255]
     } }));
   }, [containerRef2]);
 
+
   return (
     <div style={{ display: "flex"}}>
-      <div id="cgm-container-2" style={{ height: "800px", width: "800px" }}>
+      <div id="cgm-container-1" style={{ height: "800px", width: "800px" }}>
         <div
           id="cgm1"
           ref={containerRef1}
-          style={{ height: "100%", width: "100%" }}
+          style={{ height: "75%", width: "75%" }}
         />
       </div>
       <div id="cgm-container-2" style={{ height: "800px", width: "800px" }}>
