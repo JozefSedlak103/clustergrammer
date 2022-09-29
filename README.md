@@ -15,15 +15,20 @@ The original documentation for Clustergrammer and all its associated projects is
 ## Contributions
 
 Contributions are totally welcome -- there are two ways to contribute:
+
 1. Find [an issue](https://github.com/GumusLab/clustergrammer/issues) that you want to tackle and comment on it/submit a PR for it.
 2. If you find a bug with Clustergrammer or want to make an enhancement, please write [an issue](https://github.com/GumusLab/clustergrammer/issues) detailing the change and make sure the community is on board, and then submit a PR for the changes.
 
 ## Setup for Local Development
 
-1. Clone the code to your local machine
-2. Run `yarn` to install all required node modules
-3. Run `yarn build-for-example` to build the package locally into the `example/example-app` folder and watch for changes (will rebuild automatically)
-4. Open a new terminal tab or window, `cd example/example-app` and `yarn start` to start the local test app
+1. Make sure you have Node 16+ (ideally use LTS) -- see [NVM](https://github.com/nvm-sh) for Node version management
+2. Clone the code to your local machine
+3. Run `yarn` to install all required node modules
+4. Run `yarn start` to build the package locally into the `example/example-app` folder and watch for changes (will rebuild automatically)
+5. Open a new terminal tab or window, `cd example/example-app`, run `yarn` to install all required node modules and then run `yarn start` to start the local test app
+6. Happy development! Everything should be kept in sync -- it is not quite hot reload though so you will have to refresh the webpage after you make changes to see them reflected.
+
+Let me know if you have any ideas on how to make the Clustergrammer isntances update when the source code updates (right now the sources on the page update fine but it doesn't reflect in the UI)
 
 ## Licensing
 

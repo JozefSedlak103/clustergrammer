@@ -18,7 +18,7 @@ const getArgs = (container: HTMLElement, data: any, otherProps: Partial<Clusterg
     // enabledTooltips: ["dendro", "cell"],
     // showDendroSliders: false,
     hideLegend: true,
-    debug: true,
+    // debug: true,
     ...otherProps,
   }
 }
