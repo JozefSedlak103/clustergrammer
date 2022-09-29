@@ -16,7 +16,7 @@ const getArgs = (container: HTMLElement, data: any, otherProps: Partial<Clusterg
     onClick: ({ row, col }) => console.log(row, col),
     // disableTooltip: true,
     // enabledTooltips: ["dendro", "cell"],
-    // showDendroSliders: false,
+    showDendroSliders: true,
     hideLegend: true,
     // debug: true,
     ...otherProps,
