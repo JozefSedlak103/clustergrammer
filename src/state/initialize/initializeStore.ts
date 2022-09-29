@@ -30,6 +30,7 @@ export default function initialize_params(
   store.dispatch(
     store.actions.mutateVisualizationState({
       rootElementId,
+      debug: args.debug,
     })
   );
 

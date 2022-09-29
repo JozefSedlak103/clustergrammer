@@ -115,6 +115,7 @@ export interface VisualizationState {
   reset_cameras: boolean;
   rootElementId: string;
   total_mouseover: number;
+  debug: boolean;
 }
 
 const initialState: VisualizationState = (() => {
@@ -134,6 +135,7 @@ const initialState: VisualizationState = (() => {
       x: { ratio: 1.0, min: 0, max: 0 },
       y: { ratio: 1.0, min: 0, max: 0 },
     },
+    debug: false,
   };
 })();
 

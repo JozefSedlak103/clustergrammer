@@ -16,7 +16,7 @@
     "lint-fix": "eslint --fix src/",
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "build-for-example": "rimraf example/example-app/src/cg && tsc -p ./tsconfig-for-example.json",
+    "build-for-example": "tsc -w",
     "prepare": "npm run build"
   },
   "repository": {

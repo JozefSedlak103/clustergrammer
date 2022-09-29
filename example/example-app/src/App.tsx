@@ -1,7 +1,7 @@
 
+import cgl from "clustergrammer-gl";
+import { ClustergrammerProps } from "clustergrammer-gl/index.types";
 import React, { useEffect, useRef } from "react";
-import cgl from "./cg";
-import { ClustergrammerProps } from "./cg/index.types";
 import cytofData from "./data/cytof.json";
 import { generateRandomNetwork } from "./generateRandomNetwork";
 
@@ -18,6 +18,7 @@ const getArgs = (container: HTMLElement, data: any, otherProps: Partial<Clusterg
     // enabledTooltips: ["dendro", "cell"],
     // showDendroSliders: false,
     hideLegend: true,
+    debug: true,
     ...otherProps,
   }
 }
@@ -37,8 +38,8 @@ function Clustergrammer() {
   useEffect(() => {
     if (!containerRef2.current) return;
     cgl(getArgs(containerRef2.current, generateRandomNetwork(2, 4), { matrixColors: {
-      pos: [0, 255, 0],
-      neg: [255, 0, 255]
+      pos: [0, 255, 255],
+      neg: [0, 255, 255]
     } }));
   }, [containerRef2]);
 

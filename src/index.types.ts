@@ -29,4 +29,5 @@ export type ClustergrammerProps = {
   enabledTooltips?: Array<"dendro" | "cat" | "cell" | "label" | string>;
   labelLength?: number;
   matrixColors?: { pos: Color; neg: Color };
+  debug?: boolean;
 };

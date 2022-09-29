@@ -5,8 +5,10 @@ import make_spillover_args from "./makeSpilloverArgs";
 export default (function generateSpilloverParams(regl, store) {
   const spillover_args = {};
   // inst_depth is passed to spillover rects
-  // var inst_color = [1, 0, 0, 1];
-  const inst_color = [1, 1, 1, 1];
+  let inst_color = [1, 1, 1, 1];
+  if (store.select("visualization").debug) {
+    inst_color = [1, 0, 0, 1];
+  }
   // lower depth can be thought of as closer to the screen/user, e.g. on top
   // of other elements
   const spill_depth = {};
