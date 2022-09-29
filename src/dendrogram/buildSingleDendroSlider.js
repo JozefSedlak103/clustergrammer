@@ -109,11 +109,12 @@ export default function build_single_dendro_slider(regl, store, axis) {
   // add dendrogram level text
   // /////////////////////////////
   if (dendro.precalc_linkage) {
+    const text_transform = (axis == "row") ? "translate(0, 90) rotate(90)" : "translate(0, 90) rotate(90) scale(1, -1)"
     slider_group
       .append("text")
       .classed("dendro_level_text", true)
       .text(dendro.default_link_level)
-      .attr("transform", "translate(0, 90) rotate(90)")
+      .attr("transform", text_transform)
       .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .attr("font-weight", 400)
       .attr("font-size", 15)
