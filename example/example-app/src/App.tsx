@@ -17,7 +17,7 @@ const getArgs = (container: HTMLElement, data: any, otherProps: Partial<Clusterg
     // disableTooltip: true,
     // enabledTooltips: ["dendro", "cell"],
     showDendroSliders: true,
-    hideLegend: true,
+    hideLegend: false,
     // debug: true,
     ...otherProps,
   }
@@ -46,7 +46,7 @@ function Clustergrammer() {
 
   return (
     <div style={{ display: "flex"}}>
-      <div id="cgm-container-1" style={{ height: "800px", width: "800px" }}>
+      <div id="cgm-container-1" style={{ height: "800px", width: "800px", padding: "20px" }}>
         <div
           id="cgm1"
           ref={containerRef1}

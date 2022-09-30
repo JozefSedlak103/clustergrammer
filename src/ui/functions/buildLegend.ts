@@ -5,7 +5,7 @@ import customRound from "../../utils/customRound";
 import { CANVAS_CONTAINER_CLASSNAME } from "../ui.const";
 
 export const LEGEND_HEIGHT = "50%";
-export const LEGEND_WIDTH = "20%";
+export const LEGEND_WIDTH = "30px";
 
 export const buildLegend = (store: NamespacedStore) => {
   const colors = store.select("cat_viz").mat_colors;
@@ -20,16 +20,16 @@ export const buildLegend = (store: NamespacedStore) => {
   legend.style.height = LEGEND_HEIGHT;
   legend.style.width = LEGEND_WIDTH;
   legend.style.position = "absolute";
-  legend.style.top = "15%";
-  legend.style.right = `-${LEGEND_WIDTH}`;
+  legend.style.top = "0";
+  legend.style.left = `-${LEGEND_WIDTH}`;
   legend.style.display = "flex";
   legend.style.flexDirection = "column";
   legend.style.alignItems = "center";
 
   const legendColors = document.createElement("div");
   legendColors.id = `${legend.id}-colors`;
-  legendColors.style.height = "80%";
-  legendColors.style.width = LEGEND_WIDTH;
+  legendColors.style.height = "30%";
+  legendColors.style.width = `calc(${LEGEND_WIDTH} * 0.5)`;
   legendColors.style.background = "white";
   const maxColor = max > 0 ? rgbArrayToString(colors.pos_rgb) : "";
   const minColor = min < 0 ? rgbArrayToString(colors.neg_rgb) : "";

@@ -1,15 +1,15 @@
 // TODO: fix invalid this usage
 import { drag } from "d3-drag";
 import { pointer, select } from "d3-selection";
-import custom_round from "../utils/customRound";
-import changeGroups from "./changeGroups";
+import changeGroups from "../../../dendrogram/changeGroups";
+import custom_round from "../../../utils/customRound";
+import { DENDROGRAM_SLIDER_LENGTH } from "./dendrogram.draw.const";
 
-export default function build_single_dendro_slider(regl, store, axis) {
+export default function buildSingleDendroSlider(regl, store, axis) {
   const dendro = store.select("dendro");
   let dendroSliderValue;
-  const slider_length = 100;
-  const rect_height = slider_length + 20;
   const rect_width = 20;
+  const rect_height = DENDROGRAM_SLIDER_LENGTH - 30;
   const text_color = "#47515b";
   let round_level;
   if (dendro.precalc_linkage) {
@@ -31,14 +31,13 @@ export default function build_single_dendro_slider(regl, store, axis) {
     .append("g")
     .classed(axis + "_slider_group", true)
     .attr("transform", function () {
-      const inst_translation =
-        "translate(" + rect_width / 2 + ", " + rect_height / 10 + ")";
+      const inst_translation = "translate(" + rect_width / 2 + ", 0)";
       return inst_translation;
     });
   slider_group
     .append("rect")
     .classed(axis + "_slider_background", true)
-    .attr("height", rect_height + "px")
+    .attr("height", DENDROGRAM_SLIDER_LENGTH + "px")
     .attr("width", rect_width + "px")
     .attr("fill", "red")
     .attr("transform", function () {
@@ -48,16 +47,16 @@ export default function build_single_dendro_slider(regl, store, axis) {
     .attr("opacity", 0);
   slider_group
     .append("line")
-    .attr("stroke-width", slider_length / 7 + "px")
+    .attr("stroke-width", rect_height / 7 + "px")
     .attr("stroke", "black")
     .attr("stroke-linecap", "round")
     .attr("opacity", 0.0)
     .attr("y1", 0)
     .attr("y2", function () {
-      return slider_length - 2;
+      return rect_height - 2;
     })
     .on("click", click_dendro_slider);
-  const offset_triangle = -slider_length / 40;
+  const offset_triangle = -rect_height / 40;
   slider_group
     .append("path")
     .attr("fill", "black")
@@ -67,8 +66,8 @@ export default function build_single_dendro_slider(regl, store, axis) {
       const start_x = 0;
       const start_y = 0;
       const mid_x = 0;
-      const mid_y = slider_length;
-      const final_x = slider_length / 10;
+      const mid_y = rect_height;
+      const final_x = rect_height / 10;
       const final_y = 0;
       const output_string =
         "M" +
@@ -93,9 +92,9 @@ export default function build_single_dendro_slider(regl, store, axis) {
   slider_group
     .append("circle")
     .classed(axis + "_group_circle", true)
-    .attr("r", slider_length * 0.08)
+    .attr("r", rect_height * 0.08)
     .attr("transform", function () {
-      return "translate(0, " + slider_length / 2 + ")";
+      return "translate(0, " + rect_height / 2 + ")";
     })
     .attr("fill", "blue")
     .attr("opacity", default_opacity)
@@ -109,10 +108,9 @@ export default function build_single_dendro_slider(regl, store, axis) {
   // add dendrogram level text
   // /////////////////////////////
   if (dendro.precalc_linkage) {
+    const baseTextTransform = `translate(0, ${DENDROGRAM_SLIDER_LENGTH}) rotate(90)`;
     const text_transform =
-      axis == "row"
-        ? "translate(0, 90) rotate(90)"
-        : "translate(0, 90) rotate(90) scale(1, -1)";
+      axis == "row" ? baseTextTransform : `${baseTextTransform} scale(1, -1)`;
     slider_group
       .append("text")
       .classed("dendro_level_text", true)
@@ -121,7 +119,7 @@ export default function build_single_dendro_slider(regl, store, axis) {
       .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .attr("font-weight", 400)
       .attr("font-size", 15)
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", "end")
       .attr("stroke", text_color)
       .attr("alignment-baseline", "middle")
       .attr("letter-spacing", "2px")
@@ -195,7 +193,7 @@ export default function build_single_dendro_slider(regl, store, axis) {
         return output_string;
       })
       .attr("transform", function () {
-        return "translate(-10, " + slider_length + ")";
+        return "translate(-10, " + rect_height + ")";
       })
       .attr("fill", "blue")
       .attr("opacity", default_opacity)
@@ -212,8 +210,8 @@ export default function build_single_dendro_slider(regl, store, axis) {
     if (slider_pos < 0) {
       slider_pos = 0;
     }
-    if (slider_pos > slider_length) {
-      slider_pos = slider_length;
+    if (slider_pos > rect_height) {
+      slider_pos = rect_height;
     }
     if (this.nextSibling) {
       this.parentNode.appendChild(this);

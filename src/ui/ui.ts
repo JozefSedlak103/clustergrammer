@@ -4,9 +4,9 @@ import { CatArgsManager } from "../cats/manager/catArgsManager";
 import { ClustergrammerProps } from "../index.types";
 import { NamespacedStore } from "../state/store/store";
 import run_viz from "./functions/animation/runViz";
-import build_dendrogram_sliders from "./functions/buildDendrogramSliders";
 import { buildLegend } from "./functions/buildLegend";
 import build_control_panel from "./functions/controlPanel/buildControlPanel";
+import build_dendrogram_sliders from "./functions/dendrograms/buildDendrogramSliders";
 import ini_canvas_mouseover from "./functions/mouseover/iniCanvasMouseover";
 
 export type UIProps = {
