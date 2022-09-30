@@ -27,11 +27,11 @@ export const createCanvasContainer = (args: ClustergrammerProps) => {
   canvas_container = getCanvasContainer(baseContainer);
 
   let finalWidth = width;
-  if (!hideLegend) {
-    finalWidth = `calc(${width} - ${LEGEND_WIDTH})`;
-  }
-
   if (canvas_container) {
+    if (!hideLegend) {
+      finalWidth = `calc(${width} - ${LEGEND_WIDTH})`;
+      // canvas_container.style.marginLeft = `${LEGEND_WIDTH}`;
+    }
     canvas_container.style.height = `${height}`;
     canvas_container.style.width = `${finalWidth}`;
   }

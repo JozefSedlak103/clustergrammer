@@ -1,0 +1,1 @@
+export const DENDROGRAM_SLIDER_LENGTH = 110;
