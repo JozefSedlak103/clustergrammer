@@ -109,7 +109,10 @@ export default function build_single_dendro_slider(regl, store, axis) {
   // add dendrogram level text
   // /////////////////////////////
   if (dendro.precalc_linkage) {
-    const text_transform = (axis == "row") ? "translate(0, 90) rotate(90)" : "translate(0, 90) rotate(90) scale(1, -1)"
+    const text_transform =
+      axis == "row"
+        ? "translate(0, 90) rotate(90)"
+        : "translate(0, 90) rotate(90) scale(1, -1)";
     slider_group
       .append("text")
       .classed("dendro_level_text", true)

@@ -22,6 +22,11 @@ export default function build_dendrogram_sliders(regl, store) {
         if (inst_axis === "col") {
           return "rotate(-90) scale(-1,1)";
         }
+      })
+      .style("-webkit-transform", function () {
+        if (inst_axis === "col") {
+          return "rotate(-90deg) scale(-1,1)";
+        }
       });
     if (inst_axis === "row") {
       axis_slider_container.style("right", "-10px").style("top", "45px");
