@@ -20,15 +20,17 @@ export const buildLegend = (store: NamespacedStore) => {
   legend.style.height = LEGEND_HEIGHT;
   legend.style.width = LEGEND_WIDTH;
   legend.style.position = "absolute";
-  legend.style.top = "0";
-  legend.style.left = `-${LEGEND_WIDTH}`;
+  legend.style.bottom = "0";
+  legend.style.right = `-${LEGEND_WIDTH}`;
   legend.style.display = "flex";
   legend.style.flexDirection = "column";
   legend.style.alignItems = "center";
+  legend.style.justifyContent = "flex-end";
+  legend.style.fontSize = "0.8rem";
 
   const legendColors = document.createElement("div");
   legendColors.id = `${legend.id}-colors`;
-  legendColors.style.height = "30%";
+  legendColors.style.height = "50%";
   legendColors.style.width = `calc(${LEGEND_WIDTH} * 0.5)`;
   legendColors.style.background = "white";
   const maxColor = max > 0 ? rgbArrayToString(colors.pos_rgb) : "";
