@@ -118,7 +118,7 @@ export default function buildSingleDendroSlider(regl, store, axis) {
       .attr("transform", text_transform)
       .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .attr("font-weight", 400)
-      .attr("font-size", 15)
+      .attr("font-size", "0.75rem")
       .attr("text-anchor", "end")
       .attr("stroke", text_color)
       .attr("alignment-baseline", "middle")
