@@ -1,6 +1,6 @@
 <img src='img/clustergrammer-gl_logo.png' alt="Clustergramer" width="350px" >
 
-[![NPM](https://img.shields.io/npm/v/@gumuslab/clustergrammer.svg)](https://www.npmjs.com/package/@gumuslab/clustergrammer) [![NPM](https://img.shields.io/npm/l/clustergrammer-gl.svg)](https://github.com/ismms-himc/clustergrammer-gl/blob/master/LICENSE) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![TypeScript](https://badges.frapsoft.com/typescript/love/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
+[![NPM](https://img.shields.io/npm/v/@gumuslab/clustergrammer.svg)](https://www.npmjs.com/package/@gumuslab/clustergrammer) [![NPM](https://img.shields.io/npm/l/clustergrammer-gl.svg)](https://github.com/ismms-himc/clustergrammer-gl/blob/master/LICENSE) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![TypeScript](https://badges.frapsoft.com/typescript/love/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/) [![Join the chat at https://gitter.im/GumusLab/clustergrammer](https://badges.gitter.im/GumusLab/clustergrammer.svg)](https://gitter.im/GumusLab/clustergrammer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## About
 
