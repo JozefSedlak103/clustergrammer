@@ -1,5 +1,6 @@
 import { flatten } from "lodash";
 import rgbArrayToString from "../../colors/rgbArrayToString";
+import { ClustergrammerProps } from "../../index.types";
 import { NamespacedStore } from "../../state/store/store";
 import customRound from "../../utils/customRound";
 import { CANVAS_CONTAINER_CLASSNAME } from "../ui.const";
@@ -8,6 +9,7 @@ export const LEGEND_HEIGHT = "50%";
 export const LEGEND_WIDTH = "30px";
 
 export const buildLegend = (store: NamespacedStore) => {
+  const args = store.select("args") as ClustergrammerProps;
   const colors = store.select("cat_viz").mat_colors;
   const mat = store.select("network").mat;
   const flatMat = flatten<number>(mat);
@@ -20,8 +22,13 @@ export const buildLegend = (store: NamespacedStore) => {
   legend.style.height = LEGEND_HEIGHT;
   legend.style.width = LEGEND_WIDTH;
   legend.style.position = "absolute";
-  legend.style.bottom = "0";
-  legend.style.right = `-${LEGEND_WIDTH}`;
+  legend.style.top = args.legend?.y ? String(args.legend?.y) : "0";
+  const side = args.legend.side ?? "left";
+  legend.style[side] = `calc(-${LEGEND_WIDTH} + ${args.legend?.x ?? "0px"}`;
+  // if (args.legend?.x) {
+
+  //   legend.style[side === "left" ? "right" : "left"] = `-${LEGEND_WIDTH}`;
+  // }
   legend.style.display = "flex";
   legend.style.flexDirection = "column";
   legend.style.alignItems = "center";
@@ -48,8 +55,11 @@ export const buildLegend = (store: NamespacedStore) => {
   legend.append(document.createTextNode(`${flatMat ? min : "-"}`));
   legend.innerHTML += "<b><p>Min</p></b>";
 
-  document
-    .getElementById(containerId.replace("#", ""))
-    ?.getElementsByClassName(CANVAS_CONTAINER_CLASSNAME)[0]
-    ?.appendChild(legend);
+  const canvasContainer = document.querySelector(
+    `${containerId} .${CANVAS_CONTAINER_CLASSNAME}`
+  );
+
+  if (canvasContainer) {
+    canvasContainer.appendChild(legend);
+  }
 };

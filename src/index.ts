@@ -81,6 +81,9 @@ function clustergrammer_gl(
     // the state
     initializeStore(regl, args, store);
 
+    // put args into store
+    store.dispatch(store.actions.setArgs(args));
+
     // initialize components
     const camerasManager = new CamerasManager(regl, store);
     const catArgsManager = new CatArgsManager(regl, store);

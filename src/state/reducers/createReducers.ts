@@ -1,6 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { reduce } from "lodash";
 import { animationSlice } from "./animation/animationSlice";
+import { argsSlice } from "./argsSlice";
 import { arrsSlice } from "./arrsSlice";
 import { categoriesSlice } from "./categoriesSlice";
 import { catVizSlice } from "./catVizSlice";
@@ -35,7 +36,8 @@ export type SliceNames =
   | "visualization"
   | "nodeCanvasPos"
   | "search"
-  | "arrs";
+  | "arrs"
+  | "args";
 
 export const initSlices = (id: string) => {
   const slices = [
@@ -56,6 +58,7 @@ export const initSlices = (id: string) => {
     nodeCanvasPosSlice,
     searchSlice,
     arrsSlice,
+    argsSlice,
   ];
 
   const initializedSlices = slices.map((s) => s(id));

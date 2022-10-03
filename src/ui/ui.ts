@@ -21,7 +21,12 @@ export class UI {
   constructor(props: UIProps) {
     const { regl, store, camerasManager, catArgsManager, args } = props;
 
-    const { container, showControls, showDendroSliders, hideLegend } = args;
+    const {
+      container,
+      showControls,
+      showDendroSliders,
+      legend: { show: showLegend },
+    } = args;
 
     if (showControls) {
       build_control_panel(
@@ -35,7 +40,7 @@ export class UI {
     if (showDendroSliders) {
       build_dendrogram_sliders(regl, store);
     }
-    if (!hideLegend) {
+    if (showLegend) {
       buildLegend(store);
     }
     ini_canvas_mouseover(store);

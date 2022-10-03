@@ -23,11 +23,16 @@ export type ClustergrammerProps = {
   height: number | string;
   showControls?: boolean;
   showDendroSliders?: boolean;
-  hideLegend?: boolean;
   onClick?: OnClickCallback;
   disableTooltip?: boolean;
   enabledTooltips?: Array<"dendro" | "cat" | "cell" | "label" | string>;
   labelLength?: number;
   matrixColors?: { pos: Color; neg: Color };
   debug?: boolean;
+  legend: {
+    show?: boolean;
+    x?: string | number;
+    y?: string | number;
+    side?: "left" | "right";
+  };
 };

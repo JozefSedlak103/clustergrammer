@@ -1,6 +1,7 @@
 import { configureStore, Store } from "@reduxjs/toolkit";
 import _, { reduce } from "lodash";
 import { v4 as uuidv4 } from "uuid";
+import { ClustergrammerProps } from "../../index.types";
 import { MatrixState } from "../../state/reducers/matrixSlice";
 import { AnimationState } from "../reducers/animation/animationSlice";
 import { ArrsState } from "../reducers/arrsSlice";
@@ -78,7 +79,8 @@ export type RootState =
   | NodeCanvasPos
   | SearchState
   | SearchState
-  | ArrsState;
+  | ArrsState
+  | ClustergrammerProps;
 
 export interface NamespacedStore extends Store {
   actions: any;
