@@ -29,7 +29,7 @@ export type ClustergrammerProps = {
   labelLength?: number;
   matrixColors?: { pos: Color; neg: Color };
   debug?: boolean;
-  legend: {
+  legend?: {
     show?: boolean;
     x?: string | number;
     y?: string | number;

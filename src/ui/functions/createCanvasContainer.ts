@@ -28,9 +28,9 @@ export const createCanvasContainer = (args: ClustergrammerProps) => {
 
   let finalWidth = width;
   if (canvas_container) {
-    if (legend.show) {
+    if (legend?.show) {
       finalWidth = `calc(${width} - ${LEGEND_WIDTH})`;
-      if (legend.side === "left") {
+      if (legend?.side === "left") {
         canvas_container.style.marginLeft = `${LEGEND_WIDTH}`;
       }
     }

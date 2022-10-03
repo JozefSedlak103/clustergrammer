@@ -23,7 +23,7 @@ export const buildLegend = (store: NamespacedStore) => {
   legend.style.width = LEGEND_WIDTH;
   legend.style.position = "absolute";
   legend.style.top = args.legend?.y ? String(args.legend?.y) : "0";
-  const side = args.legend.side ?? "left";
+  const side = args.legend?.side ?? "left";
   legend.style[side] = `calc(-${LEGEND_WIDTH} + ${args.legend?.x ?? "0px"}`;
   // if (args.legend?.x) {
 
