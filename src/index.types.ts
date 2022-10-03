@@ -20,7 +20,7 @@ export type LegendProps = {
   x?: string | number;
   y?: string | number;
   side?: "left" | "right";
-  height: string | number;
+  height?: string | number;
 };
 
 export type ClustergrammerProps = {
