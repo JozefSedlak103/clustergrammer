@@ -15,6 +15,11 @@ const getArgs = (container: HTMLElement, data: any, otherProps: Partial<Clusterg
     showControls: true,
     onClick: ({ row, col }) => console.log(row, col),
     showDendroSliders: true,
+    legend: {
+      show: true,
+      height: "25%",
+      side: "right",
+    }
     ...otherProps,
   }
 }

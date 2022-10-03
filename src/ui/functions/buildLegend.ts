@@ -19,16 +19,14 @@ export const buildLegend = (store: NamespacedStore) => {
 
   const legend = document.createElement("div");
   legend.id = `${containerId}-legend`;
-  legend.style.height = LEGEND_HEIGHT;
+  legend.style.height = args.legend?.height
+    ? String(args.legend?.height)
+    : LEGEND_HEIGHT;
   legend.style.width = LEGEND_WIDTH;
   legend.style.position = "absolute";
   legend.style.top = args.legend?.y ? String(args.legend?.y) : "0";
   const side = args.legend?.side ?? "left";
   legend.style[side] = `calc(-${LEGEND_WIDTH} + ${args.legend?.x ?? "0px"}`;
-  // if (args.legend?.x) {
-
-  //   legend.style[side === "left" ? "right" : "left"] = `-${LEGEND_WIDTH}`;
-  // }
   legend.style.display = "flex";
   legend.style.flexDirection = "column";
   legend.style.alignItems = "center";

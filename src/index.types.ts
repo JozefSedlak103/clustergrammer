@@ -15,6 +15,14 @@ export type OnClickCallback =
 
 type Color = number[] | string;
 
+export type LegendProps = {
+  show?: boolean;
+  x?: string | number;
+  y?: string | number;
+  side?: "left" | "right";
+  height: string | number;
+};
+
 export type ClustergrammerProps = {
   use_hzome?: boolean;
   container: HTMLElement;
@@ -29,10 +37,5 @@ export type ClustergrammerProps = {
   labelLength?: number;
   matrixColors?: { pos: Color; neg: Color };
   debug?: boolean;
-  legend?: {
-    show?: boolean;
-    x?: string | number;
-    y?: string | number;
-    side?: "left" | "right";
-  };
+  legend?: LegendProps;
 };
