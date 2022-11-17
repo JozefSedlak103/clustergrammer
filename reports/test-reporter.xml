@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+    <file path="D:\Users\sedla\Desktop\5.ZS\ESS\clustergrammer2\clustergrammer\test\average.test.js">
+        <testCase name="average" duration="2"/>
+        <testCase name="average_n" duration="1"/>
+        <testCase name="custom_round" duration="0"/>
+    </file>
+</testExecutions>
