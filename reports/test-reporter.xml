@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testExecutions version="1">
     <file path="D:\Users\sedla\Desktop\5.ZS\ESS\clustergrammer2\clustergrammer\test\average.test.js">
-        <testCase name="average" duration="2"/>
-        <testCase name="average_n" duration="1"/>
-        <testCase name="custom_round" duration="0"/>
+        <testCase name="average of 1, 2, 3, 4" duration="2"/>
+        <testCase name="average_n_minus_1 of 1, 2, 3, 4" duration="0"/>
+        <testCase name="custom_round of 1524654.155555555 with 0" duration="1"/>
+        <testCase name="custom_round of 1524654.155555555 with 1" duration="1"/>
     </file>
 </testExecutions>

@@ -39,13 +39,13 @@ SF:src\utils\customRound.js
 FN:1,custom_round
 FNF:1
 FNH:1
-FNDA:1,custom_round
-DA:3,1
+FNDA:2,custom_round
+DA:3,2
 DA:6,1
 LF:2
 LH:2
 BRDA:3,0,0,0
-BRDA:3,0,1,1
+BRDA:3,0,1,2
 BRF:2
 BRH:1
 end_of_record
